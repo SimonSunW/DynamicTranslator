@@ -1,6 +1,4 @@
-﻿using DynamicTranslator.Constants;
-
-namespace DynamicTranslator.Configuration.Startup
+﻿namespace DynamicTranslator.Configuration.Startup
 {
     public interface ITranslatorConfiguration : IMustHaveUrl, IMustHaveSupportedLanguages
     {

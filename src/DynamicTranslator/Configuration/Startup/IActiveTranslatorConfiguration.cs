@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 
-using DynamicTranslator.Constants;
-
 namespace DynamicTranslator.Configuration.Startup
 {
     public interface IActiveTranslatorConfiguration : IConfiguration

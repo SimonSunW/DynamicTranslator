@@ -3,7 +3,6 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamicTranslator.Application\DynamicTranslator.Application.csproj" />
     <ProjectReference Include="..\DynamicTranslator\DynamicTranslator.csproj" />
   </ItemGroup>
   <ItemGroup>

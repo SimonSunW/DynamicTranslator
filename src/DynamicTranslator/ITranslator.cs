@@ -1,6 +1,4 @@
-﻿using DynamicTranslator.Constants;
-
-namespace DynamicTranslator
+﻿namespace DynamicTranslator
 {
     public interface ITranslator
     {

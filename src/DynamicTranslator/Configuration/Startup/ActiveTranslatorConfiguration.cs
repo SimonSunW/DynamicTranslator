@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using DynamicTranslator.Constants;
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Configuration.Startup

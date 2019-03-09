@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DynamicTranslator.Exceptions
+namespace DynamicTranslator
 {
     public class MaximumCharacterLimitException : Exception
     {

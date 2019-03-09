@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-
-using DynamicTranslator.Constants;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Configuration.Startup

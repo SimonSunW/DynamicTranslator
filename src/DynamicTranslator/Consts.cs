@@ -1,4 +1,4 @@
-﻿namespace DynamicTranslator.Constants
+﻿namespace DynamicTranslator
 {
     public class CacheNames
     {

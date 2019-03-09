@@ -10,7 +10,6 @@ using Abp.Dependency;
 using Abp.Runtime.Caching;
 
 using DynamicTranslator.Configuration.Startup;
-using DynamicTranslator.Constants;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Wpf.Extensions;

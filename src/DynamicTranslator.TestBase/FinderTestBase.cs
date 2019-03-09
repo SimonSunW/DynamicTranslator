@@ -1,17 +1,14 @@
 ﻿using System.Threading.Tasks;
 
 using Abp.Dependency;
-
-using DynamicTranslator.Application.Google.Configuration;
-using DynamicTranslator.Application.Orchestrators.Organizers;
-using DynamicTranslator.Application.Prompt.Configuration;
-using DynamicTranslator.Application.SesliSozluk.Configuration;
-using DynamicTranslator.Application.Tureng.Configuration;
-using DynamicTranslator.Application.Yandex.Configuration;
 using DynamicTranslator.Configuration.Startup;
-using DynamicTranslator.Constants;
+using DynamicTranslator.Google.Configuration;
 using DynamicTranslator.LanguageManagement;
-
+using DynamicTranslator.Orchestrators.Organizers;
+using DynamicTranslator.Prompt.Configuration;
+using DynamicTranslator.SesliSozluk.Configuration;
+using DynamicTranslator.Tureng.Configuration;
+using DynamicTranslator.Yandex.Configuration;
 using NSubstitute;
 
 using RestSharp;

@@ -1,5 +1,3 @@
-using DynamicTranslator.Constants;
-
 namespace DynamicTranslator
 {
     public class Translator : ITranslator

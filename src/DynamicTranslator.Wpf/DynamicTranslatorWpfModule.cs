@@ -5,14 +5,12 @@ using Abp.Dependency;
 using Abp.Modules;
 
 using Castle.MicroKernel.Registration;
-
-using DynamicTranslator.Application.Google;
-using DynamicTranslator.Application.Prompt;
-using DynamicTranslator.Application.SesliSozluk;
-using DynamicTranslator.Application.Tureng;
-using DynamicTranslator.Application.Yandex;
 using DynamicTranslator.Extensions;
-
+using DynamicTranslator.Google;
+using DynamicTranslator.Prompt;
+using DynamicTranslator.SesliSozluk;
+using DynamicTranslator.Tureng;
+using DynamicTranslator.Yandex;
 using Octokit;
 
 public delegate bool IsNewVersion(string incomingVersion);

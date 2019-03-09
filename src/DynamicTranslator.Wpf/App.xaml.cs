@@ -14,7 +14,6 @@ using Castle.Facilities.Logging;
 using Castle.Services.Logging.NLogIntegration;
 
 using DynamicTranslator.Configuration.Startup;
-using DynamicTranslator.Constants;
 using DynamicTranslator.Service.GoogleAnalytics;
 using DynamicTranslator.Wpf.ViewModel;
 

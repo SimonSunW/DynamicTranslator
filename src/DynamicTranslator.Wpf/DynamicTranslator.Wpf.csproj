@@ -120,9 +120,8 @@
       <HintPath>..\..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.9.1.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
-      <HintPath>..\..\packages\HtmlAgilityPack.1.9.1\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlAgilityPack, Version=1.9.2.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\HtmlAgilityPack.1.9.2\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Interop.UIAutomationClient, Version=12.0.20617.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UIAComWrapper.1.1.0.14\lib\net40\Interop.UIAutomationClient.dll</HintPath>
@@ -480,10 +479,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamicTranslator.Application\DynamicTranslator.Application.csproj">
-      <Project>{A0ED5DD8-5E6C-44A7-95A5-D3EF018C71FF}</Project>
-      <Name>DynamicTranslator.Application</Name>
-    </ProjectReference>
     <ProjectReference Include="..\DynamicTranslator\DynamicTranslator.csproj">
       <Project>{A0D66D6A-2A41-4532-AB6E-6443874946E6}</Project>
       <Name>DynamicTranslator</Name>
