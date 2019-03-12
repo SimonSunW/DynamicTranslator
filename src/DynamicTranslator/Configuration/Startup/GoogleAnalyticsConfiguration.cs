@@ -1,6 +1,6 @@
 ﻿namespace DynamicTranslator.Configuration.Startup
 {
-    public class GoogleAnalyticsConfiguration : IGoogleAnalyticsConfiguration
+    public class GoogleAnalyticsConfiguration
     {
         public string TrackingId { get; set; }
 

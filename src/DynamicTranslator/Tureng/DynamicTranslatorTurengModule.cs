@@ -1,22 +1,17 @@
-﻿using System.Reflection;
-using Abp.Modules;
+﻿using DynamicTranslator.Configuration.Startup;
 using DynamicTranslator.LanguageManagement;
-using DynamicTranslator.Tureng.Configuration;
 
 namespace DynamicTranslator.Tureng
 {
-    [DependsOn(typeof(DynamicTranslatorApplicationModule))]
-    public class DynamicTranslatorTurengModule : DynamicTranslatorModule
-    {
-        public override void Initialize()
-        {
-            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
+	public class DynamicTranslatorTurengModule
+	{
+		public DynamicTranslatorTurengModule(DynamicTranslatorConfiguration configurations)
+		{
+			var tureng = new TurengTranslatorConfiguration(configurations.ActiveTranslatorConfiguration, configurations.ApplicationConfiguration);
+			tureng.Url = "http://tureng.com/search/";
+			tureng.SupportedLanguages = LanguageMapping.Tureng.ToLanguages();
 
-            Configurations.ModuleConfigurations.UseSesliSozlukTranslate().WithConfigurations(configuration =>
-            {
-                configuration.Url = "http://tureng.com/search/";
-                configuration.SupportedLanguages = LanguageMapping.Tureng.ToLanguages();
-            });
-        }
-    }
+			configurations.TurengTranslatorConfiguration = tureng;
+		}
+	}
 }

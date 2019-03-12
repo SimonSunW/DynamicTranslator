@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
-
-using Abp.Dependency;
-
-using DynamicTranslator.Service.GoogleAnalytics;
+using DynamicTranslator.Google;
 
 namespace DynamicTranslator
 {
-    public class GoogleAnalyticsTracker : IObserver<long>, ISingletonDependency
+    public class GoogleAnalyticsTracker : IObserver<long>
     {
-        private readonly IGoogleAnalyticsService _googleAnalyticsService;
+        private readonly GoogleAnalyticsService _googleAnalyticsService;
 
-        public GoogleAnalyticsTracker(IGoogleAnalyticsService googleAnalyticsService)
+        public GoogleAnalyticsTracker(GoogleAnalyticsService googleAnalyticsService)
         {
             _googleAnalyticsService = googleAnalyticsService;
         }

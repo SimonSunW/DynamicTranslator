@@ -2,11 +2,11 @@
 
 namespace DynamicTranslator.Configuration.Startup
 {
-    public class ApplicationConfiguration : IApplicationConfiguration
+    public class ApplicationConfiguration
     {
         public string TrackingId { get; set; }
 
-        public IClientConfiguration ClientConfiguration { get; set; }
+        public ClientConfiguration ClientConfiguration { get; set; }
 
         public Language FromLanguage { get; set; }
 

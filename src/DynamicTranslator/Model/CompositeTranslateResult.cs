@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Abp.Domain.Entities;
 
 namespace DynamicTranslator.Model
 {
     [Serializable]
-    public class CompositeTranslateResult : Entity<string>
+    public class CompositeTranslateResult 
     {
         public CompositeTranslateResult(string searchText, int frequency, ICollection<TranslateResult> result, DateTime createDate):this()
         {
@@ -16,6 +15,8 @@ namespace DynamicTranslator.Model
             Frequency = frequency;
             Id = searchText;
         }
+
+        public string Id { get; set; }
 
         public CompositeTranslateResult() {}
 

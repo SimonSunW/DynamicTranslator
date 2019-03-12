@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Configuration.Startup
 {
-    public class ActiveTranslatorConfiguration : IActiveTranslatorConfiguration
+    public class ActiveTranslatorConfiguration
     {
         public ActiveTranslatorConfiguration()
         {
@@ -27,7 +26,7 @@ namespace DynamicTranslator.Configuration.Startup
             Translators.ForEach(t => t.Passivate());
         }
 
-        public IImmutableList<ITranslator> ActiveTranslators => Translators.Where(x => x.IsActive).ToImmutableList();
+        public IReadOnlyList<ITranslator> ActiveTranslators => Translators.Where(x => x.IsActive).ToList();
 
         public IList<ITranslator> Translators { get; }
     }

@@ -1,22 +1,17 @@
-﻿using System.Reflection;
-using Abp.Modules;
+﻿using DynamicTranslator.Configuration.Startup;
 using DynamicTranslator.LanguageManagement;
-using DynamicTranslator.SesliSozluk.Configuration;
 
 namespace DynamicTranslator.SesliSozluk
 {
-    [DependsOn(typeof(DynamicTranslatorApplicationModule))]
-    public class DynamicTranslatorSesliSozlukModule : DynamicTranslatorModule
-    {
-        public override void Initialize()
-        {
-            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
+	public class DynamicTranslatorSesliSozlukModule
+	{
+		public DynamicTranslatorSesliSozlukModule(DynamicTranslatorConfiguration configurations)
+		{
+			var cfg = new SesliSozlukTranslatorConfiguration(configurations.ActiveTranslatorConfiguration, configurations.ApplicationConfiguration);
+			cfg.Url = "http://www.seslisozluk.net/c%C3%BCmle-%C3%A7eviri/";
+			cfg.SupportedLanguages = LanguageMapping.SesliSozluk.ToLanguages();
 
-            Configurations.ModuleConfigurations.UseSesliSozlukTranslate().WithConfigurations(configuration =>
-                          {
-                              configuration.Url = "http://www.seslisozluk.net/c%C3%BCmle-%C3%A7eviri/";
-                              configuration.SupportedLanguages = LanguageMapping.SesliSozluk.ToLanguages();
-                          });
-        }
-    }
+			configurations.SesliSozlukTranslatorConfiguration = cfg;
+		}
+	}
 }

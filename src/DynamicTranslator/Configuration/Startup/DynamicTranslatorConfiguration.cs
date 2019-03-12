@@ -1,42 +1,29 @@
-﻿using Abp.Configuration;
-using Abp.Dependency;
+﻿using DynamicTranslator.Google;
+using DynamicTranslator.Prompt;
+using DynamicTranslator.SesliSozluk;
+using DynamicTranslator.Tureng;
+using DynamicTranslator.Yandex;
 
 namespace DynamicTranslator.Configuration.Startup
 {
-    public class DynamicTranslatorConfiguration : DictionaryBasedConfig, IDynamicTranslatorConfiguration
-    {
-        public DynamicTranslatorConfiguration(IIocManager iocManager)
-        {
-            IocManager = iocManager;
-        }
+	public class DynamicTranslatorConfiguration
+	{
+		public ActiveTranslatorConfiguration ActiveTranslatorConfiguration { get; set; }
 
-        public IActiveTranslatorConfiguration ActiveTranslatorConfiguration { get; private set; }
+		public AppConfigManager AppConfigManager { get; set; }
 
-        public IAppConfigManager AppConfigManager { get; private set; }
+		public ApplicationConfiguration ApplicationConfiguration { get; set; }
 
-        public IApplicationConfiguration ApplicationConfiguration { get; private set; }
+		public GoogleAnalyticsConfiguration GoogleAnalyticsConfiguration { get; set; }
 
-        public IGoogleAnalyticsConfiguration GoogleAnalyticsConfiguration { get; private set; }
+		public GoogleTranslatorConfiguration GoogleTranslatorConfiguration { get; set; }
 
-        public IIocManager IocManager { get; }
+		public PromptTranslatorConfiguration PromptTranslatorConfiguration { get; set; }
 
-        public ILocalPersistenceConfiguration LocalConfigurationPersistence { get; private set; }
+		public TurengTranslatorConfiguration TurengTranslatorConfiguration { get; set; }
 
-        public ITranslatorModuleConfigurations ModuleConfigurations { get; private set; }
-
-        public T Get<T>()
-        {
-            return GetOrCreate(typeof(T).FullName, () => IocManager.Resolve<T>());
-        }
-
-        public void Initialize()
-        {
-            ApplicationConfiguration = IocManager.Resolve<IApplicationConfiguration>();
-            LocalConfigurationPersistence = IocManager.Resolve<ILocalPersistenceConfiguration>();
-            ActiveTranslatorConfiguration = IocManager.Resolve<IActiveTranslatorConfiguration>();
-            GoogleAnalyticsConfiguration = IocManager.Resolve<IGoogleAnalyticsConfiguration>();
-            ModuleConfigurations = IocManager.Resolve<ITranslatorModuleConfigurations>();
-            AppConfigManager = IocManager.Resolve<IAppConfigManager>();
-        }
-    }
+		public SesliSozlukTranslatorConfiguration SesliSozlukTranslatorConfiguration { get; set; }
+		
+		public YandexTranslatorConfiguration YandexTranslatorConfiguration { get; set; }
+	}
 }

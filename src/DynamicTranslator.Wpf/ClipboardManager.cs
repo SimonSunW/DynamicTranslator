@@ -1,12 +1,9 @@
 ﻿using System.Windows;
-
-using Abp.Dependency;
-
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Wpf
 {
-    public class ClipboardManager : IClipboardManager, ISingletonDependency
+    public class ClipboardManager
     {
         public void Clear()
         {

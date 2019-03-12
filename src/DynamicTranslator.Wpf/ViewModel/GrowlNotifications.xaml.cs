@@ -5,21 +5,20 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-
 using DynamicTranslator.Configuration.Startup;
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Wpf.ViewModel
 {
-    public partial class GrowlNotifications : IGrowlNotifications
+    public partial class GrowlNotifications
     {
-        private readonly IApplicationConfiguration _applicationConfiguration;
+        private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly Notifications _buffer = new Notifications();
         public readonly Notifications Notifications;
         private int _count;
         public bool IsDisposed;
 
-        public GrowlNotifications(IApplicationConfiguration applicationConfiguration, Notifications notifications)
+        public GrowlNotifications(ApplicationConfiguration applicationConfiguration, Notifications notifications)
         {
             InitializeComponent();
             _applicationConfiguration = applicationConfiguration;

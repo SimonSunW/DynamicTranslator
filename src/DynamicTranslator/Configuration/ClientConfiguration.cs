@@ -2,16 +2,16 @@
 
 namespace DynamicTranslator.Configuration
 {
-    public class ClientConfiguration : IClientConfiguration
+    public class ClientConfiguration
     {
-        public ClientConfiguration(IDynamicTranslatorConfiguration configurations)
+        public ClientConfiguration(DynamicTranslatorConfiguration configurations)
         {
             Configurations = configurations;
         }
 
         public string AppVersion { get; set; }
 
-        public IDynamicTranslatorConfiguration Configurations { get; }
+        public DynamicTranslatorConfiguration Configurations { get; }
 
         public string Id { get; set; }
 

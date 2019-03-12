@@ -4,23 +4,24 @@ using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Configuration.Startup
 {
-    public abstract class AbstractTranslatorConfiguration : ITranslatorConfiguration
+    public abstract class AbstractTranslatorConfiguration
     {
-        /// <summary>
-        ///     Property injection for activated translator types.
-        /// </summary>
-        public IActiveTranslatorConfiguration ActiveTranslatorConfiguration { get; set; }
-
-        public IApplicationConfiguration ApplicationConfiguration { get; set; }
+	    private readonly ActiveTranslatorConfiguration _activeTranslatorConfiguration;
+	    private readonly ApplicationConfiguration _applicationConfiguration;
+	    public AbstractTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration, ApplicationConfiguration applicationConfiguration)
+	    {
+		    _activeTranslatorConfiguration = activeTranslatorConfiguration;
+		    _applicationConfiguration = applicationConfiguration;
+	    }
 
         public virtual bool CanSupport()
         {
-            return SupportedLanguages.Any(x => x.Extension == ApplicationConfiguration.ToLanguage.Extension);
+            return SupportedLanguages.Any(x => x.Extension == _applicationConfiguration.ToLanguage.Extension);
         }
 
         public virtual bool IsActive()
         {
-            return ActiveTranslatorConfiguration.ActiveTranslators
+            return _activeTranslatorConfiguration.ActiveTranslators
                                                 .Any(x => (x.Type == TranslatorType)
                                                           && x.IsActive
                                                           && x.IsEnabled);

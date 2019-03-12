@@ -1,23 +1,15 @@
-﻿using System;
-using System.Runtime.Serialization;
-
-namespace DynamicTranslator.Model
+﻿namespace DynamicTranslator.Model
 {
-    [Serializable]
-    public class TranslateResult
-    {
-        public TranslateResult() : this(true, new Maybe<string>()) {}
+	public class TranslateResult
+	{
+		public TranslateResult() : this(true, string.Empty) { }
 
-        public TranslateResult(bool isSucess, Maybe<string> resultMessage)
-        {
-            IsSuccess = isSucess;
-            ResultMessage = resultMessage;
-        }
-
-        [DataMember]
-        public bool IsSuccess { get; set; }
-
-        [DataMember]
-        public Maybe<string> ResultMessage { get; set; }
-    }
+		public TranslateResult(bool isSuccess, string result)
+		{
+			IsSuccess = isSuccess;
+			ResultMessage = result;
+		}
+		public bool IsSuccess { get; set; }
+		public string ResultMessage { get; set; }
+	}
 }

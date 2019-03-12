@@ -1,26 +1,22 @@
-﻿using System.Reflection;
-using Abp.Modules;
-using DynamicTranslator.Google.Configuration;
+﻿using DynamicTranslator.Configuration.Startup;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Google
 {
-    [DependsOn(typeof(DynamicTranslatorApplicationModule))]
-    public class DynamicTranslatorGoogleModule : DynamicTranslatorModule
-    {
-        private const string GoogleTranslateUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&hl={1}&dt=t&dt=bd&dj=1&source=bubble&q={2}";
+	public class DynamicTranslatorGoogleModule
+	{
+		private const string GoogleTranslateUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&hl={1}&dt=t&dt=bd&dj=1&source=bubble&q={2}";
 
-        public override void Initialize()
-        {
-            IocManager.RegisterAssemblyByConvention(Assembly.GetExecutingAssembly());
+		public DynamicTranslatorGoogleModule(DynamicTranslatorConfiguration configurations)
+		{
+			configurations.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Google);
+			var googleTranslate = new GoogleTranslatorConfiguration(configurations.ActiveTranslatorConfiguration, configurations.ApplicationConfiguration)
+			{
+				Url = GoogleTranslateUrl,
+				SupportedLanguages = LanguageMapping.All.ToLanguages()
+			};
 
-            Configurations.ModuleConfigurations.UseGoogleTranslate().WithConfigurations(configuration =>
-            {
-                configuration.Url = GoogleTranslateUrl;
-                configuration.SupportedLanguages = LanguageMapping.All.ToLanguages();
-            });
-
-            Configurations.ModuleConfigurations.UseGoogleDetector().WithConfigurations(configuration => { configuration.Url = GoogleTranslateUrl; });
-        }
-    }
+			configurations.GoogleTranslatorConfiguration = googleTranslate;
+		}
+	}
 }

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\GitLink.3.1.0\build\GitLink.props" Condition="Exists('..\..\packages\GitLink.3.1.0\build\GitLink.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -92,26 +91,6 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Abp, Version=4.3.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\packages\Abp.4.3.0\lib\netstandard2.0\Abp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Facilities.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\..\packages\Castle.LoggingFacility.5.0.0\lib\net45\Castle.Facilities.Logging.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Services.Logging.NLogIntegration, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\..\packages\Castle.Core-NLog.4.3.1\lib\net45\Castle.Services.Logging.NLogIntegration.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Castle.Windsor, Version=5.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc">
-      <HintPath>..\..\packages\Castle.Windsor.5.0.0\lib\net45\Castle.Windsor.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="GitLink, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\..\packages\gitlink.2.4.0\lib\net45\GitLink.exe</HintPath>
       <Private>True</Private>
@@ -126,10 +105,6 @@
     <Reference Include="Interop.UIAutomationClient, Version=12.0.20617.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UIAComWrapper.1.1.0.14\lib\net40\Interop.UIAutomationClient.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
-      <HintPath>..\..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
@@ -368,16 +343,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ClipboardManager.cs" />
-    <Compile Include="DynamicTranslatorWpfModule.cs" />
     <Compile Include="Extensions\MultithreadUiExtensions.cs" />
-    <Compile Include="IClipboardManager.cs" />
     <Compile Include="Notification\INotifier.cs" />
-    <Compile Include="ViewModel\IGrowlNotifications.cs" />
-    <Compile Include="ViewModel\INotification.cs" />
     <Compile Include="ViewModel\MultiThreadObservableCollection.cs" />
     <Compile Include="ViewModel\Notification.cs" />
     <Compile Include="ViewModel\Notifications.cs" />
-    <Compile Include="ITranslatorBootstrapper.cs" />
     <Compile Include="Notification\Notifier.cs" />
     <Compile Include="Observers\Finder.cs" />
     <Compile Include="TranslatorBootstrapper.cs" />
@@ -501,10 +471,7 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\..\packages\GitLink.3.1.0\build\GitLink.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GitLink.3.1.0\build\GitLink.props'))" />
-    <Error Condition="!Exists('..\..\packages\GitLink.3.1.0\build\GitLink.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\GitLink.3.1.0\build\GitLink.targets'))" />
   </Target>
-  <Import Project="..\..\packages\GitLink.3.1.0\build\GitLink.targets" Condition="Exists('..\..\packages\GitLink.3.1.0\build\GitLink.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
