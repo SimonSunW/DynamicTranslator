@@ -15,7 +15,7 @@ namespace DynamicTranslator.Wpf
             return Clipboard.GetText().RemoveSpecialCharacters().ToLowerInvariant();
         }
 
-        public bool IsContainsText()
+        public bool ContainsText()
         {
             return Clipboard.ContainsText() && !string.IsNullOrEmpty(Clipboard.GetText().Trim());
         }

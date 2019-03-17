@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Google
 {
-	public class GoogleTranslatorConfiguration : AbstractTranslatorConfiguration
+	public class GoogleTranslatorConfiguration : TranslatorConfiguration
 	{
 		public override IList<Language> SupportedLanguages { get; set; }
 

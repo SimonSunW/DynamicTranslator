@@ -1,17 +1,19 @@
 ﻿namespace DynamicTranslator
 {
-    public interface ITranslator
-    {
-        bool IsActive { get; set; }
+	public interface ITranslator
+	{
+		bool IsActive { get; }
 
-        bool IsEnabled { get; set; }
+		bool IsEnabled { get; }
 
-        string Name { get; set; }
+		string Name { get; }
 
-        TranslatorType Type { get; set; }
+		TranslatorType Type { get; }
 
-        ITranslator Activate();
+		ITranslator Activate();
 
-        ITranslator Passivate();
-    }
+		ITranslator DeActivate();
+
+		Find Find { get; }
+	}
 }

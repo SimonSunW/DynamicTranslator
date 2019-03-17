@@ -92,7 +92,7 @@
             </DataTemplate.Triggers>
         </DataTemplate>
     </Window.Resources>
-    <ItemsControl x:Name="_notificationsControl" FocusVisualStyle="{x:Null}"
+    <ItemsControl x:Name="NotificationsControl" FocusVisualStyle="{x:Null}"
                   D:DataContext="{D:DesignData Source=DesignTimeNotificationData.xaml}" ItemsSource="{Binding .}"
                   ItemTemplate="{StaticResource MessageTemplate}" />
 </Window>

@@ -2,7 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 
 namespace DynamicTranslator.Google
 {

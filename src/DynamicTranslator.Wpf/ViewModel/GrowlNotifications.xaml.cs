@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Wpf.ViewModel
@@ -23,7 +23,7 @@ namespace DynamicTranslator.Wpf.ViewModel
             InitializeComponent();
             _applicationConfiguration = applicationConfiguration;
             Notifications = notifications;
-            _notificationsControl.DataContext = Notifications;
+            NotificationsControl.DataContext = Notifications;
         }
 
         public event EventHandler OnDispose;
@@ -65,11 +65,6 @@ namespace DynamicTranslator.Wpf.ViewModel
                     }
                 },
                 DispatcherPriority.Background);
-        }
-
-        public async Task AddNotificationAsync(Notification notification)
-        {
-            await Task.Run(() => AddNotification(notification));
         }
 
         public void RemoveNotification(Notification notification)

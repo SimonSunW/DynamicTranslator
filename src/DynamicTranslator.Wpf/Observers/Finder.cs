@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Threading;
 using System.Threading.Tasks;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.Google;
 using DynamicTranslator.Model;
 using DynamicTranslator.Orchestrators;
-using DynamicTranslator.Wpf.Notification;
 
 namespace DynamicTranslator.Wpf.Observers
 {
@@ -16,10 +16,10 @@ namespace DynamicTranslator.Wpf.Observers
 		private readonly DynamicTranslatorConfiguration _configuration;
 		private readonly GoogleAnalyticsService _googleAnalytics;
 		private readonly GoogleLanguageDetector _languageDetector;
-		private readonly INotifier _notifier;
+		private readonly Notifier _notifier;
 		private string _previousString;
 
-		public Finder(INotifier notifier,
+		public Finder(Notifier notifier,
 			GoogleLanguageDetector languageDetector,
 			DynamicTranslatorConfiguration configuration,
 			GoogleAnalyticsService googleAnalytics)
@@ -51,18 +51,29 @@ namespace DynamicTranslator.Wpf.Observers
 					_previousString = currentString;
 
 					string fromLanguageExtension = await _languageDetector.DetectLanguage(currentString);
-					var results = new List<TranslateResult>(); //await GetMeansFromCache(currentString, fromLanguageExtension);
+
+					var results = await FindMeans(currentString, fromLanguageExtension, CancellationToken.None);
 					var means = await new ResultOrganizer().OrganizeResult(results, currentString, out string failedResults);
 
-					await Notify(currentString, means);
-					await Notify(currentString, failedResults);
+					Notify(currentString, means);
+					Notify(currentString, failedResults);
 					await Trace(currentString, fromLanguageExtension);
 				}
 				catch (Exception ex)
 				{
-					await Notify("Error", ex.Message);
+					Notify("Error", ex.Message);
 				}
 			});
+		}
+
+		private Task<TranslateResult[]> FindMeans(string currentString, string fromLanguageExtension, CancellationToken cancellationToken)
+		{
+			List<Task<TranslateResult>> findFunc = _configuration
+				.ActiveTranslatorConfiguration
+				.ActiveTranslators
+				.Select(x => x.Find(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken)).ToList();
+
+			return Task.WhenAll(findFunc.ToArray());
 		}
 
 		private async Task Trace(string currentString, string fromLanguageExtension)
@@ -79,11 +90,9 @@ namespace DynamicTranslator.Wpf.Observers
 				"notification").ConfigureAwait(false);
 		}
 
-		private Task Notify(string currentString, string means)
+		private void Notify(string currentString, string means)
 		{
-			return !string.IsNullOrEmpty(means) 
-				? _notifier.AddNotificationAsync(currentString, ImageUrls.NotificationUrl, means) 
-				: Task.CompletedTask;
+			_notifier.AddNotification(currentString, ImageUrls.NotificationUrl, means);
 		}
 	}
 }

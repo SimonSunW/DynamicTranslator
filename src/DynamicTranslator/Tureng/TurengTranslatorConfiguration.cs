@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Tureng
 {
-	public class TurengTranslatorConfiguration : AbstractTranslatorConfiguration
+	public class TurengTranslatorConfiguration : TranslatorConfiguration
 	{
 		private readonly ApplicationConfiguration _applicationConfiguration;
 

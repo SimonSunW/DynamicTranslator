@@ -3,12 +3,13 @@ using System.Security.AccessControl;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using DynamicTranslator.Configuration;
+using DynamicTranslator.Wpf.ViewModel;
 
 namespace DynamicTranslator.Wpf
 {
 	public partial class App
 	{
-
 		private Mutex _mutex;
 		private const string MutexName = @"Global\1109F104-B4B4-4ED1-920C-F4D8EFE9E834}";
 		private bool _isMutexCreated;
@@ -16,21 +17,24 @@ namespace DynamicTranslator.Wpf
 
 		public App()
 		{
-			//bootstrapping
+			CheckApplicationInstanceExist();
 
+			var configurations = new DynamicTranslatorConfiguration();
+			var dynamicTranslatorCoreModule = new DynamicTranslatorCoreModule(configurations);
+			var mainWindow = new MainWindow()
+			{
+				Configurations = configurations
+			};
+
+			mainWindow.Show();
 		}
 
 		protected override void OnExit(ExitEventArgs e)
 		{
-
 		}
 
 		protected override void OnStartup(StartupEventArgs eventArgs)
 		{
-
-			CheckApplicationInstanceExist();
-
-			base.OnStartup(eventArgs);
 		}
 
 		private void CheckApplicationInstanceExist()

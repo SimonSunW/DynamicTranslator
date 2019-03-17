@@ -2,7 +2,7 @@
 using System.Net.Cache;
 using System.Text;
 using System.Threading.Tasks;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
 using RestSharp;
 

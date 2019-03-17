@@ -55,9 +55,9 @@ namespace DynamicTranslator.Extensions
 			return deserializedObj;
 		}
 
-		public static T GetFirstValueInArrayGraph<T>(this JArray jarray)
+		public static T GetFirstValueInArrayGraph<T>(this JArray jArray)
 		{
-			return jarray.ForwardToken().Value<T>();
+			return jArray.ForwardToken().Value<T>();
 		}
 
 		internal static JToken ForwardToken(this JToken token)
@@ -65,7 +65,7 @@ namespace DynamicTranslator.Extensions
 			return token.HasValues ? token.First.ForwardToken() : token;
 		}
 
-		public static T Manipulate<T>(this T @this, Action<T> setAction)
+		public static T With<T>(this T @this, Action<T> setAction)
 		{
 			setAction(@this);
 			return @this;

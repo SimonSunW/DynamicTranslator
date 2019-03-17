@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.SesliSozluk
 {
-    public class SesliSozlukTranslatorConfiguration : AbstractTranslatorConfiguration
+    public class SesliSozlukTranslatorConfiguration : TranslatorConfiguration
     {
         public override IList<Language> SupportedLanguages { get; set; }
 

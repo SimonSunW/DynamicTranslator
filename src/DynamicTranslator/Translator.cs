@@ -1,38 +1,44 @@
+using System;
+using DynamicTranslator.Model;
+
 namespace DynamicTranslator
 {
-    public class Translator : ITranslator
-    {
-        public Translator(string name, TranslatorType type, bool isEnabled)
-        {
-            IsEnabled = isEnabled;
-            Name = name;
-            Type = type;
-        }
+	public class Translator : ITranslator
+	{
+		public Translator(string name, TranslatorType type, bool isEnabled, Find find)
+		{
+			IsEnabled = isEnabled;
+			Name = name;
+			Type = type;
+			Find = find;
+		}
 
-        public Translator(string name, TranslatorType type) : this(name, type, true)
-        {
-            Name = name;
-            Type = type;
-        }
+		public Translator(string name, TranslatorType type, Find find) : this(name, type, true, find)
+		{
+			Name = name;
+			Type = type;
+		}
 
-        public ITranslator Activate()
-        {
-            IsActive = true;
-            return this;
-        }
+		public ITranslator Activate()
+		{
+			IsActive = true;
+			return this;
+		}
 
-        public ITranslator Passivate()
-        {
-            IsActive = false;
-            return this;
-        }
+		public ITranslator DeActivate()
+		{
+			IsActive = false;
+			return this;
+		}
 
-        public bool IsActive { get; set; }
+		public Find Find { get; }
 
-        public bool IsEnabled { get; set; }
+		public bool IsActive { get; private set; }
 
-        public string Name { get; set; }
+		public bool IsEnabled { get; private set; }
 
-        public TranslatorType Type { get; set; }
-    }
+		public string Name { get; private set; }
+
+		public TranslatorType Type { get; private set; }
+	}
 }

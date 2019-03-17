@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using DynamicTranslator.Configuration.Startup;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.LanguageManagement;
 
 namespace DynamicTranslator.Prompt
 {
-    public class PromptTranslatorConfiguration : AbstractTranslatorConfiguration
+    public class PromptTranslatorConfiguration : TranslatorConfiguration
     {
         public override IList<Language> SupportedLanguages { get; set; }
 

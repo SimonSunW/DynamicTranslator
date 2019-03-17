@@ -344,11 +344,10 @@
     </ApplicationDefinition>
     <Compile Include="ClipboardManager.cs" />
     <Compile Include="Extensions\MultithreadUiExtensions.cs" />
-    <Compile Include="Notification\INotifier.cs" />
     <Compile Include="ViewModel\MultiThreadObservableCollection.cs" />
     <Compile Include="ViewModel\Notification.cs" />
     <Compile Include="ViewModel\Notifications.cs" />
-    <Compile Include="Notification\Notifier.cs" />
+    <Compile Include="Observers\Notifier.cs" />
     <Compile Include="Observers\Finder.cs" />
     <Compile Include="TranslatorBootstrapper.cs" />
     <Compile Include="Properties\Annotations.cs" />
