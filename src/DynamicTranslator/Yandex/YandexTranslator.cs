@@ -3,20 +3,19 @@ using System.Text;
 using System.Xml;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
-using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Model;
 using RestSharp;
 
 namespace DynamicTranslator.Yandex
 {
-	public class DynamicTranslatorYandexModule
+	public class YandexTranslator
 	{
 		private const string AnonymousUrl = "https://translate.yandex.net/api/v1/tr.json/translate?";
 		private const string BaseUrl = "https://translate.yandex.com/";
 		private const string InternalSId = "id=93bdaee7.57bb46e3.e787b736-0-0";
 		private const string Url = "https://translate.yandex.net/api/v1.5/tr/translate?";
 
-		public DynamicTranslatorYandexModule(DynamicTranslatorConfiguration configurations)
+		public YandexTranslator(DynamicTranslatorConfiguration configurations)
 		{
 			var yandex = new YandexTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
 				configurations.ApplicationConfiguration)

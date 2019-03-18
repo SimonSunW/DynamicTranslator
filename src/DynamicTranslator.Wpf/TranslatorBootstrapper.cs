@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,10 +28,10 @@ namespace DynamicTranslator.Wpf
 		private IKeyboardMouseEvents _globalMouseHook;
 		private IntPtr _hWndNextViewer;
 		private HwndSource _hWndSource;
-		private volatile bool _isMouseDown;
 		private Point _mouseFirstPoint;
 		private Point _mouseSecondPoint;
 		private IDisposable _syncObserver;
+		private readonly InterlockedBoolean _isMouseDown = new InterlockedBoolean();
 
 		public TranslatorBootstrapper(MainWindow mainWindow,
 			GrowlNotifications growlNotifications,
@@ -52,7 +53,7 @@ namespace DynamicTranslator.Wpf
 				if (_cancellationTokenSource.Token.CanBeCanceled) _cancellationTokenSource.Cancel(false);
 
 				DisposeHooks();
-				Task.Run(() => SendKeys.Flush());
+				SendKeys.Flush();
 				UnsubscribeLocalEvents();
 				_growlNotifications.Dispose();
 				_finderObservable.Dispose();
@@ -102,25 +103,23 @@ namespace DynamicTranslator.Wpf
 
 		private void HandleTextCaptured(int msg, IntPtr wParam, IntPtr lParam)
 		{
-			_mainWindow.DispatchingAsync(() =>
+			Win32.SendMessage(_hWndNextViewer, msg, wParam, lParam); //pass the message to the next viewer //clipboard content changed
+
+			if (!_clipboardManager.ContainsText()) return;
+
+			string currentText = _clipboardManager.GetCurrentText();
+
+			if (!string.IsNullOrEmpty(currentText))
 			{
-				Win32.SendMessage(_hWndNextViewer, msg, wParam, lParam); //pass the message to the next viewer //clipboard content changed
-
-				if (!_clipboardManager.ContainsText()) return;
-
-				string currentText = _clipboardManager.GetCurrentText();
-
-				if (!string.IsNullOrEmpty(currentText))
-				{
-					TextCaptured(currentText);
-					_clipboardManager.Clear();
-				}
-			});
+				TextCaptured(currentText);
+				_clipboardManager.Clear();
+			}
 		}
 
 		private void MouseDoubleClicked(object sender, MouseEventArgs e)
 		{
-			_isMouseDown = false;
+			_isMouseDown.Set(false);
+
 			if (_cancellationTokenSource.Token.IsCancellationRequested) ;
 
 			SendCopyCommand();
@@ -130,19 +129,25 @@ namespace DynamicTranslator.Wpf
 		{
 			if (_cancellationTokenSource.Token.IsCancellationRequested) return;
 
-			_mouseFirstPoint = e.Location;
-			_isMouseDown = true;
+			if ((e.Button & MouseButtons.Left) != 0)
+			{
+				_isMouseDown.Set(true);
+				_mouseFirstPoint = e.Location;
+			}
 		}
 
 		private void MouseUp(object sender, MouseEventArgs e)
 		{
-			if (_isMouseDown && !_mouseSecondPoint.Equals(_mouseFirstPoint))
+			if ((e.Button & MouseButtons.Left) != 0)
 			{
-				_mouseSecondPoint = e.Location;
-				if (_cancellationTokenSource.Token.IsCancellationRequested) return;
+				if (_isMouseDown.Value && !(_mouseFirstPoint.X == _mouseSecondPoint.X && _mouseFirstPoint.Y == _mouseSecondPoint.Y))
+				{
+					_isMouseDown.Set(false);
+					_mouseSecondPoint = e.Location;
+					if (_cancellationTokenSource.Token.IsCancellationRequested) return;
 
-				SendCopyCommand();
-				_isMouseDown = false;
+					SendCopyCommand();
+				}
 			}
 		}
 
@@ -152,36 +157,55 @@ namespace DynamicTranslator.Wpf
 			_hWndSource = HwndSource.FromHwnd(wih.Handle);
 			_globalMouseHook = Hook.GlobalEvents();
 			var source = _hWndSource;
-			if (source != null)
-			{
-				source.AddHook(WinProc); // start processing window messages
-				_hWndNextViewer = Win32.SetClipboardViewer(source.Handle); // set this window as a viewer
-			}
+
+			if (source == null) return;
+
+			source.AddHook(WinProc); // start processing window messages
+			_hWndNextViewer = Win32.SetClipboardViewer(source.Handle); // set this window as a viewer
 		}
 
 		private void StartObservers()
 		{
+			var finder = new Finder(
+				new Notifier(_growlNotifications),
+				new GoogleLanguageDetector(_dynamicTranslatorConfiguration),
+				_dynamicTranslatorConfiguration,
+				new GoogleAnalyticsService(_dynamicTranslatorConfiguration.ApplicationConfiguration));
+
+			var googleAnalytics = new GoogleAnalyticsTracker(new GoogleAnalyticsService(_dynamicTranslatorConfiguration.ApplicationConfiguration));
+
 			_finderObservable = Observable
 				.FromEventPattern<WhenClipboardContainsTextEventArgs>(
 					h => WhenClipboardContainsTextEventHandler += h,
-					h => WhenClipboardContainsTextEventHandler -= h).Subscribe(
-					new Finder(
-						new Notifier(_growlNotifications),
-						new GoogleLanguageDetector(_dynamicTranslatorConfiguration),
-						_dynamicTranslatorConfiguration,
-						new GoogleAnalyticsService(_dynamicTranslatorConfiguration.ApplicationConfiguration)));
+					h => WhenClipboardContainsTextEventHandler -= h)
+				.Subscribe(finder);
 
 			_syncObserver = Observable
 				.Interval(TimeSpan.FromSeconds(7.0), TaskPoolScheduler.Default)
 				.StartWith(-1L)
-				.Subscribe(new GoogleAnalyticsTracker(new GoogleAnalyticsService(_dynamicTranslatorConfiguration.ApplicationConfiguration)));
+				.Subscribe(googleAnalytics);
 		}
 
 		private void SubscribeLocalEvents()
 		{
 			_globalMouseHook.MouseDoubleClick += MouseDoubleClicked;
-			_globalMouseHook.MouseDown += MouseDown;
-			_globalMouseHook.MouseUp += MouseUp;
+			//_globalMouseHook.MouseDown += MouseDown;
+			//_globalMouseHook.MouseUp += MouseUp;
+			_globalMouseHook.MouseDragStarted += MouseDragStarted;
+			_globalMouseHook.MouseDragFinished += MouseDragFinished;
+		}
+
+		private void MouseDragFinished(object sender, MouseEventArgs e)
+		{
+			if (_cancellationTokenSource.Token.IsCancellationRequested) return;
+			_isMouseDown.Set(false);
+			SendCopyCommand();
+
+		}
+
+		private void MouseDragStarted(object sender, MouseEventArgs e)
+		{
+			_isMouseDown.Set(true);
 		}
 
 		private void TextCaptured(string currentText)

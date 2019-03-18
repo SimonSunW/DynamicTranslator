@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
-using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Model;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 
 namespace DynamicTranslator.Google
 {
-	public class DynamicTranslatorGoogleModule
+	public class GoogleTranslator
 	{
 		private const string GoogleTranslateUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&hl={1}&dt=t&dt=bd&dj=1&source=bubble&q={2}";
 		private const string Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
@@ -20,7 +17,7 @@ namespace DynamicTranslator.Google
 		private const string AcceptLanguage = "en-US,en;q=0.8,tr;q=0.6";
 		private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-		public DynamicTranslatorGoogleModule(DynamicTranslatorConfiguration configurations)
+		public GoogleTranslator(DynamicTranslatorConfiguration configurations)
 		{
 			var google = new GoogleTranslatorConfiguration(configurations.ActiveTranslatorConfiguration, configurations.ApplicationConfiguration)
 			{

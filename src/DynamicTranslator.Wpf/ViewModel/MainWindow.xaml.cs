@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using DynamicTranslator.Configuration;
-using DynamicTranslator.LanguageManagement;
+using DynamicTranslator.Model;
 using DynamicTranslator.Wpf.Extensions;
 
 using Octokit;
 
-using Language = DynamicTranslator.LanguageManagement.Language;
+using Language = DynamicTranslator.Model.Language;
 
 namespace DynamicTranslator.Wpf.ViewModel
 {
@@ -51,8 +51,7 @@ namespace DynamicTranslator.Wpf.ViewModel
 			};
 
 			FillLanguageCombobox();
-
-			this.DispatchingAsync(async () => await InitializeVersionChecker());
+			//InitializeVersionChecker();
 		}
 
 		private void BtnSwitchClick(object sender, RoutedEventArgs e)
@@ -100,9 +99,9 @@ namespace DynamicTranslator.Wpf.ViewModel
 			ComboBoxLanguages.SelectedValue = Configurations.ApplicationConfiguration.ToLanguage.Extension;
 		}
 
-		private Task<Release> GetReleaseFromCache(GitHubClient gitHubClient)
+		private Task<Release> GetRelease()
 		{
-			return gitHubClient.Repository.Release.GetLatest(Configurations.ApplicationConfiguration.GitHubRepositoryOwnerName, Configurations.ApplicationConfiguration.GitHubRepositoryName);
+			return _gitHubClient.Repository.Release.GetLatest(Configurations.ApplicationConfiguration.GitHubRepositoryOwnerName, Configurations.ApplicationConfiguration.GitHubRepositoryName);
 		}
 
 		private void GithubButtonClick(object sender, RoutedEventArgs e)
@@ -110,21 +109,21 @@ namespace DynamicTranslator.Wpf.ViewModel
 			Process.Start("https://github.com/DynamicTranslator/DynamicTranslator");
 		}
 
-		private async Task InitializeVersionChecker()
+		private void InitializeVersionChecker()
 		{
 			NewVersionButton.Visibility = Visibility.Hidden;
-			await CheckVersion();
+			CheckVersion();
 		}
 
-		private async Task CheckVersion()
+		private void CheckVersion()
 		{
-			Release release = await GetReleaseFromCache(_gitHubClient);
+			Release release = GetRelease().Result;
 
 			string incomingVersion = release.TagName;
 
 			if (_isNewVersion(incomingVersion))
 			{
-				await this.DispatchingAsync(() =>
+				this.DispatchingAsync(() =>
 				{
 					NewVersionButton.Visibility = Visibility.Visible;
 					NewVersionButton.Content = $"A new version {incomingVersion} released, update now!";
@@ -135,13 +134,16 @@ namespace DynamicTranslator.Wpf.ViewModel
 
 		private void LockUiElements()
 		{
-			ComboBoxLanguages.Focusable = false;
-			ComboBoxLanguages.IsHitTestVisible = false;
-			CheckBoxGoogleTranslate.IsHitTestVisible = false;
-			CheckBoxTureng.IsHitTestVisible = false;
-			CheckBoxYandexTranslate.IsHitTestVisible = false;
-			CheckBoxSesliSozluk.IsHitTestVisible = false;
-			CheckBoxPrompt.IsHitTestVisible = false;
+			this.DispatchingAsync(() =>
+			{
+				ComboBoxLanguages.Focusable = false;
+				ComboBoxLanguages.IsHitTestVisible = false;
+				CheckBoxGoogleTranslate.IsHitTestVisible = false;
+				CheckBoxTureng.IsHitTestVisible = false;
+				CheckBoxYandexTranslate.IsHitTestVisible = false;
+				CheckBoxSesliSozluk.IsHitTestVisible = false;
+				CheckBoxPrompt.IsHitTestVisible = false;
+			});
 		}
 
 		private void NewVersionButtonClick(object sender, RoutedEventArgs e)
@@ -155,7 +157,7 @@ namespace DynamicTranslator.Wpf.ViewModel
 
 		private void PrepareTranslators()
 		{
-			Configurations.ActiveTranslatorConfiguration.PassivateAll();
+			Configurations.ActiveTranslatorConfiguration.DeActivate();
 
 			if (CheckBoxGoogleTranslate.IsChecked != null && CheckBoxGoogleTranslate.IsChecked.Value)
 			{

@@ -4,14 +4,13 @@ using System.Net.Cache;
 using System.Text;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
-using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Model;
 using HtmlAgilityPack;
 using RestSharp;
 
 namespace DynamicTranslator.SesliSozluk
 {
-	public class DynamicTranslatorSesliSozlukModule
+	public class SesliSozlukTranslator
 	{
 		private const string Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
 		private const string AcceptEncoding = "gzip, deflate";
@@ -19,7 +18,7 @@ namespace DynamicTranslator.SesliSozluk
 		private const string ContentType = "application/x-www-form-urlencoded";
 		private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-		public DynamicTranslatorSesliSozlukModule(DynamicTranslatorConfiguration configurations)
+		public SesliSozlukTranslator(DynamicTranslatorConfiguration configurations)
 		{
 			var cfg = new SesliSozlukTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
 				configurations.ApplicationConfiguration)

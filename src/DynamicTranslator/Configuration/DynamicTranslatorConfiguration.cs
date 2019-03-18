@@ -1,20 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using DynamicTranslator.Configuration;
 using DynamicTranslator.Configuration.UniqueIdentifier;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.Google;
-using DynamicTranslator.LanguageManagement;
+using DynamicTranslator.Model;
 using DynamicTranslator.Prompt;
 using DynamicTranslator.SesliSozluk;
 using DynamicTranslator.Tureng;
 using DynamicTranslator.Yandex;
+using RestSharp;
 
-namespace DynamicTranslator
+namespace DynamicTranslator.Configuration
 {
-	public class DynamicTranslatorCoreModule
+	public class DynamicTranslatorConfiguration
 	{
-		public DynamicTranslatorCoreModule(DynamicTranslatorConfiguration configurations)
+		public ActiveTranslatorConfiguration ActiveTranslatorConfiguration { get; set; } = new ActiveTranslatorConfiguration();
+
+		public AppConfigManager AppConfigManager { get; set; } = new AppConfigManager();
+
+		public Func<IRestClient> ClientFactory => () => new RestClient();
+
+		public ApplicationConfiguration ApplicationConfiguration { get; set; } = new ApplicationConfiguration();
+
+		public GoogleAnalyticsConfiguration GoogleAnalyticsConfiguration { get; set; }
+
+		public GoogleTranslatorConfiguration GoogleTranslatorConfiguration { get; set; }
+
+		public PromptTranslatorConfiguration PromptTranslatorConfiguration { get; set; }
+
+		public TurengTranslatorConfiguration TurengTranslatorConfiguration { get; set; }
+
+		public SesliSozlukTranslatorConfiguration SesliSozlukTranslatorConfiguration { get; set; }
+
+		public YandexTranslatorConfiguration YandexTranslatorConfiguration { get; set; }
+
+		public void Configure()
 		{
 			var appConfigManager = new AppConfigManager();
 			string existingToLanguage = appConfigManager.Get("ToLanguage");
@@ -30,7 +50,7 @@ namespace DynamicTranslator
 				MaxNotifications = 4,
 				ToLanguage = new Language(existingToLanguage, LanguageMapping.All[existingToLanguage]),
 				FromLanguage = new Language(existingFromLanguage, LanguageMapping.All[existingFromLanguage]),
-				ClientConfiguration = new ClientConfiguration(configurations),
+				ClientConfiguration = new ClientConfiguration(this),
 			};
 
 			var googleAnalytics = new GoogleAnalyticsConfiguration
@@ -46,17 +66,18 @@ namespace DynamicTranslator
 			client.MachineName = Environment.MachineName.Normalize();
 			appConfigManager.SaveOrUpdate("ClientId", client.Id);
 
-			configurations.ApplicationConfiguration = applicationConfiguration;
+			ApplicationConfiguration = applicationConfiguration;
 
-			var google = new DynamicTranslatorGoogleModule(configurations);
-			var yandex = new DynamicTranslatorYandexModule(configurations);
-			var sesliSozluk = new DynamicTranslatorSesliSozlukModule(configurations);
-			var tureng = new DynamicTranslatorTurengModule(configurations);
-			var prompt = new DynamicTranslatorPromptModule(configurations);
+			var google = new GoogleTranslator(this);
+			var yandex = new YandexTranslator(this);
+			var sesliSozluk = new SesliSozlukTranslator(this);
+			var tureng = new TurengTranslator(this);
+			var prompt = new PromptTranslator(this);
 
-			configurations.GoogleAnalyticsConfiguration = googleAnalytics;
+			GoogleAnalyticsConfiguration = googleAnalytics;
 			applicationConfiguration.ClientConfiguration = client;
 		}
+
 		private string GenerateUniqueClientId()
 		{
 			string uniqueId;

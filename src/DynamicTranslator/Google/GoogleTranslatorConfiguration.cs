@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using DynamicTranslator.Configuration;
-using DynamicTranslator.LanguageManagement;
+using DynamicTranslator.Model;
 
 namespace DynamicTranslator.Google
 {

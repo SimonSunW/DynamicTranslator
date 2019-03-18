@@ -1,20 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using DynamicTranslator.Configuration;
+﻿using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
-using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Model;
 using RestSharp;
 
 namespace DynamicTranslator.Prompt
 {
 
-	public class DynamicTranslatorPromptModule
+	public class PromptTranslator
 	{
 		private const string ContentType = "application/json;Charset=UTF-8";
 		private const string ContentTypeName = "Content-Type";
 
-		public DynamicTranslatorPromptModule(DynamicTranslatorConfiguration configurations)
+		public PromptTranslator(DynamicTranslatorConfiguration configurations)
 		{
 			var cfg = new PromptTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
 				configurations.ApplicationConfiguration)

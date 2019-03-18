@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.AccessControl;
 using System.Threading;
 using System.Windows;
@@ -17,29 +18,21 @@ namespace DynamicTranslator.Wpf
 
 		public App()
 		{
-			CheckApplicationInstanceExist();
-
-			var configurations = new DynamicTranslatorConfiguration();
-			var dynamicTranslatorCoreModule = new DynamicTranslatorCoreModule(configurations);
-			var mainWindow = new MainWindow()
-			{
-				Configurations = configurations
-			};
-
-			mainWindow.Show();
-		}
-
-		protected override void OnExit(ExitEventArgs e)
-		{
+			GuardAgainstMultipleInstances();
 		}
 
 		protected override void OnStartup(StartupEventArgs eventArgs)
 		{
+			var configurations = new DynamicTranslatorConfiguration();
+			configurations.Configure();
+			var mainWindow = new MainWindow { Configurations = configurations };
+			mainWindow.InitializeComponent();
+			mainWindow.Show();
 		}
 
-		private void CheckApplicationInstanceExist()
+		private void GuardAgainstMultipleInstances()
 		{
-			string user = Environment.UserDomainName + "\\" + Environment.UserName;
+			string user = Environment.UserDomainName + Path.DirectorySeparatorChar + Environment.UserName;
 
 			try
 			{

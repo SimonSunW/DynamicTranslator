@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace DynamicTranslator.LanguageManagement
+namespace DynamicTranslator.Model
 {
     public static class LanguageExtensions
     {

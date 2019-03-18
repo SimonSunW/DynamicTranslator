@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Google;
 using DynamicTranslator.Model;
-using DynamicTranslator.Orchestrators;
 
 namespace DynamicTranslator.Wpf.Observers
 {
@@ -52,11 +51,10 @@ namespace DynamicTranslator.Wpf.Observers
 
 					string fromLanguageExtension = await _languageDetector.DetectLanguage(currentString);
 
-					var results = await FindMeans(currentString, fromLanguageExtension, CancellationToken.None);
-					var means = await new ResultOrganizer().OrganizeResult(results, currentString, out string failedResults);
-
+					TranslateResult[] results = await FindMeans(currentString, fromLanguageExtension, CancellationToken.None);
+					string means = await new ResultOrganizer().OrganizeResult(results, currentString, out string failedResults);
 					Notify(currentString, means);
-					Notify(currentString, failedResults);
+
 					await Trace(currentString, fromLanguageExtension);
 				}
 				catch (Exception ex)
@@ -81,13 +79,13 @@ namespace DynamicTranslator.Wpf.Observers
 			await _googleAnalytics.TrackEventAsync("DynamicTranslator",
 				"Translate",
 				$"{currentString} | {fromLanguageExtension} - {_configuration.ApplicationConfiguration.ToLanguage.Extension} | v{ApplicationVersion.GetCurrentVersion()} ",
-				null).ConfigureAwait(false);
+				null);
 
 			await _googleAnalytics.TrackAppScreenAsync("DynamicTranslator",
 				ApplicationVersion.GetCurrentVersion(),
 				"dynamictranslator",
 				"dynamictranslator",
-				"notification").ConfigureAwait(false);
+				"notification");
 		}
 
 		private void Notify(string currentString, string means)

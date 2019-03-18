@@ -1,4 +1,4 @@
-﻿namespace DynamicTranslator.LanguageManagement
+﻿namespace DynamicTranslator.Model
 {
     public class Language
     {

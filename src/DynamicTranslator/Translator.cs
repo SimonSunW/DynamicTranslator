@@ -1,9 +1,6 @@
-using System;
-using DynamicTranslator.Model;
-
 namespace DynamicTranslator
 {
-	public class Translator : ITranslator
+	public class Translator
 	{
 		public Translator(string name, TranslatorType type, bool isEnabled, Find find)
 		{
@@ -19,13 +16,13 @@ namespace DynamicTranslator
 			Type = type;
 		}
 
-		public ITranslator Activate()
+		public Translator Activate()
 		{
 			IsActive = true;
 			return this;
 		}
 
-		public ITranslator DeActivate()
+		public Translator DeActivate()
 		{
 			IsActive = false;
 			return this;

@@ -5,19 +5,18 @@ using System.Net.Cache;
 using System.Text;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
-using DynamicTranslator.LanguageManagement;
 using DynamicTranslator.Model;
 using HtmlAgilityPack;
 using RestSharp;
 
 namespace DynamicTranslator.Tureng
 {
-	public class DynamicTranslatorTurengModule
+	public class TurengTranslator
 	{
 		private const string AcceptLanguage = "en-US,en;q=0.8,tr;q=0.6";
 		private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-		public DynamicTranslatorTurengModule(DynamicTranslatorConfiguration configurations)
+		public TurengTranslator(DynamicTranslatorConfiguration configurations)
 		{
 			var tureng = new TurengTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
 				configurations.ApplicationConfiguration)
