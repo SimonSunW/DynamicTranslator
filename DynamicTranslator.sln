@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTranslator.Wpf", "src\DynamicTranslator.Wpf\DynamicTranslator.Wpf.csproj", "{6995ABFD-720F-41E7-BE8B-38F23BA4BB57}"
 EndProject
@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{74BBC1F0-BEE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{492F1AF1-370D-4B2A-8A85-8FDB3493036D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DynamicTranslator.Tests", "test\DynamicTranslator.Tests\DynamicTranslator.Tests.csproj", "{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{A0D66D6A-2A41-4532-AB6E-6443874946E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0D66D6A-2A41-4532-AB6E-6443874946E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0D66D6A-2A41-4532-AB6E-6443874946E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -44,6 +50,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{6995ABFD-720F-41E7-BE8B-38F23BA4BB57} = {74BBC1F0-BEE2-45E1-9CD2-F03E4C7EDBBE}
 		{A0D66D6A-2A41-4532-AB6E-6443874946E6} = {74BBC1F0-BEE2-45E1-9CD2-F03E4C7EDBBE}
+		{D2B783C8-CEEC-4899-A6C3-9D5EE76174B0} = {492F1AF1-370D-4B2A-8A85-8FDB3493036D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F59170BF-7548-4B92-AE24-F3D7B853B552}

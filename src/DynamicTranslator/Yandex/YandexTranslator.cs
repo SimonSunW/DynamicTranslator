@@ -39,9 +39,7 @@ namespace DynamicTranslator.Yandex
 														.Append($"text={Uri.EscapeUriString(request.CurrentText)}")));
 
 				IRestResponse response = await configurations.ClientFactory().With(client => { client.BaseUrl = address; }).ExecutePostTaskAsync(new RestRequest(Method.POST));
-
-
-				string mean = string.Empty;
+                string mean = response.Content;
 				if (response.Ok())
 				{
 					mean = MakeMeaningful(mean);
@@ -71,10 +69,10 @@ namespace DynamicTranslator.Yandex
 			}
 			else
 			{
-				output = text.DeserializeAs<YandexDetectResponse>().Text.JoinAsString(",");
+				output = text.DeserializeAs<YandexDetectResponse>()?.Text.JoinAsString(",");
 			}
 
-			return output.ToLower().Trim();
+			return output?.ToLower().Trim();
 		}
 	}
 }
