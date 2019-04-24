@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Wpf
@@ -17,7 +18,15 @@ namespace DynamicTranslator.Wpf
 
         public bool ContainsText()
         {
-            return Clipboard.ContainsText() && !string.IsNullOrEmpty(Clipboard.GetText().Trim());
+            try
+            {
+                return Clipboard.ContainsText() && !string.IsNullOrEmpty(Clipboard.GetText().Trim());
+            }
+            catch (Exception e)
+            {
+                return ContainsText();
+            }
+           
         }
     }
 }

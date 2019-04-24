@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Xml;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.Model;
-using RestSharp;
 
 namespace DynamicTranslator.Yandex
 {
@@ -15,32 +15,31 @@ namespace DynamicTranslator.Yandex
 		private const string InternalSId = "id=93bdaee7.57bb46e3.e787b736-0-0";
 		private const string Url = "https://translate.yandex.net/api/v1.5/tr/translate?";
 
-		public YandexTranslator(DynamicTranslatorConfiguration configurations)
+		public YandexTranslator(DynamicTranslatorServices services)
 		{
-			var yandex = new YandexTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
-				configurations.ApplicationConfiguration)
+			var yandex = new YandexTranslatorConfiguration(services.ActiveTranslatorConfiguration, services.ApplicationConfiguration)
 			{
 				BaseUrl = BaseUrl,
 				SId = InternalSId,
 				Url = Url,
-				ApiKey = configurations.AppConfigManager.Get("YandexApiKey"),
+				ApiKey = services.AppConfigManager.Get("YandexApiKey"),
 				SupportedLanguages = LanguageMapping.Yandex.ToLanguages()
 			};
 
-			configurations.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Yandex, async (request, token) =>
+			services.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Yandex, async (request, token) =>
 			{
 
 				var address = new Uri(string.Format(yandex.Url +
 													new StringBuilder()
 														.Append($"key={yandex.ApiKey}")
 														.Append(Headers.Ampersand)
-														.Append($"lang={request.FromLanguageExtension}-{configurations.ApplicationConfiguration.ToLanguage.Extension}")
+														.Append($"lang={request.FromLanguageExtension}-{services.ApplicationConfiguration.ToLanguage.Extension}")
 														.Append(Headers.Ampersand)
 														.Append($"text={Uri.EscapeUriString(request.CurrentText)}")));
 
-				IRestResponse response = await configurations.ClientFactory().With(client => { client.BaseUrl = address; }).ExecutePostTaskAsync(new RestRequest(Method.POST));
-                string mean = response.Content;
-				if (response.Ok())
+				HttpResponseMessage response = await services.ClientFactory().HttpClient.With(client => { client.BaseAddress = new Uri(BaseUrl); }).PostAsync(address, null);
+                string mean = await response.Content.ReadAsStringAsync();
+				if (response.IsSuccessStatusCode)
 				{
 					mean = MakeMeaningful(mean);
 				}
@@ -49,7 +48,7 @@ namespace DynamicTranslator.Yandex
 
 			});
 
-			configurations.YandexTranslatorConfiguration = yandex;
+			services.YandexTranslatorConfiguration = yandex;
 		}
 
 		private string MakeMeaningful(string text)

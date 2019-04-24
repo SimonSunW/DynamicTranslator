@@ -2,14 +2,14 @@
 {
     public class ClientConfiguration
     {
-        public ClientConfiguration(DynamicTranslatorConfiguration configurations)
+        public ClientConfiguration(DynamicTranslatorServices serviceses)
         {
-            Configurations = configurations;
+            Serviceses = serviceses;
         }
 
         public string AppVersion { get; set; }
 
-        public DynamicTranslatorConfiguration Configurations { get; }
+        public DynamicTranslatorServices Serviceses { get; }
 
         public string Id { get; set; }
 

@@ -1,26 +1,28 @@
 ﻿using System.Configuration;
 using System.Linq;
+using IniParser;
+using IniParser.Model.Configuration;
+using IniParser.Parser;
+using Microsoft.Extensions.Configuration;
 
 namespace DynamicTranslator.Configuration
 {
 	public class AppConfigManager
-	{
+    {
+        private readonly IConfigurationRoot _configurationRoot;
+        public AppConfigManager(IConfigurationRoot configurationRoot)
+        {
+            this._configurationRoot = configurationRoot;
+        }
 		public string Get(string key)
-		{
-			if (ConfigurationManager.AppSettings.AllKeys.ToList().Contains(key))
-			{
-				return ConfigurationManager.AppSettings[key];
-			}
-
-			return string.Empty;
-		}
+        {
+            return _configurationRoot[key];
+        }
 
 		public void SaveOrUpdate(string key, string value)
-		{
-			System.Configuration.Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-			configuration.AppSettings.Settings[key].Value = value;
-			configuration.Save();
-			ConfigurationManager.RefreshSection("appSettings");
+        {
+            _configurationRoot[key] = value;
+            //TODO SAVE ini file
 		}
 	}
 }

@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net.Cache;
+using System.Net.Http;
 using System.Text;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.Model;
 using HtmlAgilityPack;
-using RestSharp;
 
 namespace DynamicTranslator.SesliSozluk
 {
@@ -18,40 +18,43 @@ namespace DynamicTranslator.SesliSozluk
 		private const string ContentType = "application/x-www-form-urlencoded";
 		private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-		public SesliSozlukTranslator(DynamicTranslatorConfiguration configurations)
+		public SesliSozlukTranslator(DynamicTranslatorServices services)
 		{
-			var cfg = new SesliSozlukTranslatorConfiguration(configurations.ActiveTranslatorConfiguration,
-				configurations.ApplicationConfiguration)
+			var cfg = new SesliSozlukTranslatorConfiguration(services.ActiveTranslatorConfiguration,
+				services.ApplicationConfiguration)
 			{
 				Url = "http://www.seslisozluk.net/c%C3%BCmle-%C3%A7eviri/",
 				SupportedLanguages = LanguageMapping.SesliSozluk.ToLanguages()
 			};
 
-			configurations.SesliSozlukTranslatorConfiguration = cfg;
-
-			configurations.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.SesliSozluk, async (request, token) =>
+			services.SesliSozlukTranslatorConfiguration = cfg;
+			services.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.SesliSozluk, async (request, token) =>
 			{
-				string parameter = $"sl=auto&text={Uri.EscapeUriString(request.CurrentText)}&tl={configurations.ApplicationConfiguration.ToLanguage.Extension}";
+				string parameter = $"sl=auto&text={Uri.EscapeUriString(request.CurrentText)}&tl={services.ApplicationConfiguration.ToLanguage.Extension}";
 
-				IRestResponse response = await configurations.ClientFactory().With(client =>
+				var httpClient =   services.ClientFactory().HttpClient.With(client =>
 				{
-					client.BaseUrl = cfg.Url.ToUri();
-					client.Encoding = Encoding.UTF8;
-					client.CachePolicy = new HttpRequestCachePolicy(HttpCacheAgeControl.MaxAge, TimeSpan.FromHours(1));
-				}).ExecutePostTaskAsync(
-					new RestRequest(Method.POST)
-						.AddHeader(Headers.AcceptLanguage, AcceptLanguage)
-						.AddHeader(Headers.AcceptEncoding, AcceptEncoding)
-						.AddHeader(Headers.ContentType, ContentType)
-						.AddHeader(Headers.UserAgent, UserAgent)
-						.AddHeader(Headers.Accept, Accept)
-						.AddParameter(ContentType, parameter, ParameterType.RequestBody));
+					client.BaseAddress = cfg.Url.ToUri();
+                });
 
-				var mean = string.Empty;
+                var req = new HttpRequestMessage {Method = HttpMethod.Post};
+                req.Headers.Add(Headers.AcceptLanguage, AcceptLanguage);
+                req.Headers.Add(Headers.AcceptEncoding, AcceptEncoding);
+                req.Headers.Add(Headers.ContentType, ContentType);
+                req.Headers.Add(Headers.UserAgent, UserAgent);
+                req.Headers.Add(Headers.Accept, Accept);
+                req.Content = new FormUrlEncodedContent(new []
+                {
+                    new KeyValuePair<string, string>(ContentType, parameter), 
 
-				if (response.Ok())
+                });
+
+                var response = await httpClient.SendAsync(req);
+				
+                var mean = string.Empty;
+				if (response.IsSuccessStatusCode)
 				{
-					mean = OrganizeMean(response.Content);
+					mean = OrganizeMean(await response.Content.ReadAsStringAsync());
 				}
 
 				return new TranslateResult(true, mean);

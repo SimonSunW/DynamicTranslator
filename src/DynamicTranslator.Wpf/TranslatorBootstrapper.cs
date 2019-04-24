@@ -17,7 +17,7 @@ namespace DynamicTranslator.Wpf
 {
     public class TranslatorBootstrapper
     {
-        private readonly DynamicTranslatorConfiguration _configurations;
+        private readonly DynamicTranslatorServices _serviceses;
         private readonly ClipboardManager _clipboardManager;
         private readonly GrowlNotifications _growlNotifications;
         private readonly MainWindow _mainWindow;
@@ -31,11 +31,11 @@ namespace DynamicTranslator.Wpf
         private IDisposable _syncObserver;
         private readonly InterlockedBoolean _isMouseDown = new InterlockedBoolean();
 
-        public TranslatorBootstrapper(MainWindow mainWindow, GrowlNotifications growlNotifications, DynamicTranslatorConfiguration configurations, ClipboardManager clipboardManager)
+        public TranslatorBootstrapper(MainWindow mainWindow, GrowlNotifications growlNotifications, DynamicTranslatorServices serviceses, ClipboardManager clipboardManager)
         {
             _mainWindow = mainWindow;
             _growlNotifications = growlNotifications;
-            _configurations = configurations;
+            _serviceses = serviceses;
             _clipboardManager = clipboardManager;
         }
 
@@ -84,8 +84,8 @@ namespace DynamicTranslator.Wpf
 
         private void ConfigureNotificationMeasurements()
         {
-            _growlNotifications.Top = SystemParameters.WorkArea.Top + _configurations.ApplicationConfiguration.TopOffset;
-            _growlNotifications.Left = SystemParameters.WorkArea.Left + SystemParameters.WorkArea.Width - _configurations.ApplicationConfiguration.LeftOffset;
+            _growlNotifications.Top = SystemParameters.WorkArea.Top + _serviceses.ApplicationConfiguration.TopOffset;
+            _growlNotifications.Left = SystemParameters.WorkArea.Left + SystemParameters.WorkArea.Width - _serviceses.ApplicationConfiguration.LeftOffset;
         }
 
         private void DisposeHooks()
@@ -115,7 +115,10 @@ namespace DynamicTranslator.Wpf
         {
             _isMouseDown.Set(false);
 
-            if (_cancellationTokenSource.Token.IsCancellationRequested) ;
+            if (_cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                return;
+            }
 
             SendCopyCommand();
         }
@@ -163,11 +166,11 @@ namespace DynamicTranslator.Wpf
         {
             var finder = new Finder(
                 new Notifier(_growlNotifications),
-                new GoogleLanguageDetector(_configurations),
-                _configurations,
-                new GoogleAnalyticsService(_configurations.ApplicationConfiguration));
+                new GoogleLanguageDetector(_serviceses),
+                _serviceses,
+                new GoogleAnalyticsService(_serviceses.ApplicationConfiguration));
 
-            var googleAnalytics = new GoogleAnalyticsTracker(new GoogleAnalyticsService(_configurations.ApplicationConfiguration));
+            var googleAnalytics = new GoogleAnalyticsTracker(new GoogleAnalyticsService(_serviceses.ApplicationConfiguration));
 
             _finderObservable = Observable
                 .FromEventPattern<WhenClipboardContainsTextEventArgs>(

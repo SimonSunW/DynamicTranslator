@@ -23,9 +23,8 @@ namespace DynamicTranslator.Wpf
 
 		protected override void OnStartup(StartupEventArgs eventArgs)
 		{
-			var configurations = new DynamicTranslatorConfiguration();
-			configurations.Configure();
-			var mainWindow = new MainWindow { Configurations = configurations };
+			var configurations = new DynamicTranslatorServices();
+            var mainWindow = new MainWindow { Serviceses = configurations };
 			mainWindow.InitializeComponent();
 			mainWindow.Show();
 		}

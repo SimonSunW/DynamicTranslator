@@ -12,7 +12,7 @@ namespace DynamicTranslator.Wpf.Observers
 {
 	public class Finder : IObserver<EventPattern<WhenClipboardContainsTextEventArgs>>
 	{
-		private readonly DynamicTranslatorConfiguration _configuration;
+		private readonly DynamicTranslatorServices _services;
 		private readonly GoogleAnalyticsService _googleAnalytics;
 		private readonly GoogleLanguageDetector _languageDetector;
 		private readonly Notifier _notifier;
@@ -20,12 +20,12 @@ namespace DynamicTranslator.Wpf.Observers
 
 		public Finder(Notifier notifier,
 			GoogleLanguageDetector languageDetector,
-			DynamicTranslatorConfiguration configuration,
+			DynamicTranslatorServices services,
 			GoogleAnalyticsService googleAnalytics)
 		{
 			_notifier = notifier;
 			_languageDetector = languageDetector;
-			_configuration = configuration;
+			_services = services;
 			_googleAnalytics = googleAnalytics;
 		}
 
@@ -66,7 +66,7 @@ namespace DynamicTranslator.Wpf.Observers
 
 		private Task<TranslateResult[]> FindMeans(string currentString, string fromLanguageExtension, CancellationToken cancellationToken)
 		{
-			List<Task<TranslateResult>> findFunc = _configuration
+			List<Task<TranslateResult>> findFunc = _services
 				.ActiveTranslatorConfiguration
 				.ActiveTranslators
 				.Select(x => x.Find(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken)).ToList();
@@ -78,7 +78,7 @@ namespace DynamicTranslator.Wpf.Observers
 		{
 			await _googleAnalytics.TrackEventAsync("DynamicTranslator",
 				"Translate",
-				$"{currentString} | {fromLanguageExtension} - {_configuration.ApplicationConfiguration.ToLanguage.Extension} | v{ApplicationVersion.GetCurrentVersion()} ",
+				$"{currentString} | {fromLanguageExtension} - {_services.ApplicationConfiguration.ToLanguage.Extension} | v{ApplicationVersion.GetCurrentVersion()} ",
 				null);
 
 			await _googleAnalytics.TrackAppScreenAsync("DynamicTranslator",

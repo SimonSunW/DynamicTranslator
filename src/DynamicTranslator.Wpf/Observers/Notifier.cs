@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using DynamicTranslator.Wpf.ViewModel;
+﻿using DynamicTranslator.Wpf.ViewModel;
 
 namespace DynamicTranslator.Wpf.Observers
 {

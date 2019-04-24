@@ -17,7 +17,7 @@ namespace DynamicTranslator.Wpf.ViewModel
 {
 	public partial class MainWindow
 	{
-		public DynamicTranslatorConfiguration Configurations { get; set; }
+		public DynamicTranslatorServices Serviceses { get; set; }
 		public TranslatorBootstrapper Translator { get; private set; }
 		private GitHubClient _gitHubClient;
 		private Func<string, bool> _isNewVersion;
@@ -36,12 +36,12 @@ namespace DynamicTranslator.Wpf.ViewModel
 
 			Translator = new TranslatorBootstrapper(
 				this,
-				new GrowlNotifications(Configurations.ApplicationConfiguration, new Notifications()),
-				Configurations,
+				new GrowlNotifications(Serviceses.ApplicationConfiguration, new Notifications()),
+				Serviceses,
 				new ClipboardManager());
 
 			Translator.SubscribeShutdownEvents();
-			_gitHubClient = new GitHubClient(new ProductHeaderValue(Configurations.ApplicationConfiguration.GitHubRepositoryName));
+			_gitHubClient = new GitHubClient(new ProductHeaderValue(Serviceses.ApplicationConfiguration.GitHubRepositoryName));
 			_isNewVersion = version =>
 			{
 				var currentVersion = new Version(ApplicationVersion.GetCurrentVersion());
@@ -71,8 +71,8 @@ namespace DynamicTranslator.Wpf.ViewModel
 				BtnSwitch.Content = "Stop Translator";
 
 				string selectedLanguageName = ((Language)ComboBoxLanguages.SelectedItem).Name;
-				Configurations.AppConfigManager.SaveOrUpdate("ToLanguage", selectedLanguageName);
-				Configurations.ApplicationConfiguration.ToLanguage = new Language(selectedLanguageName, LanguageMapping.All[selectedLanguageName]);
+				Serviceses.AppConfigManager.SaveOrUpdate("ToLanguage", selectedLanguageName);
+				Serviceses.ApplicationConfiguration.ToLanguage = new Language(selectedLanguageName, LanguageMapping.All[selectedLanguageName]);
 
 				PrepareTranslators();
 				LockUiElements();
@@ -96,12 +96,12 @@ namespace DynamicTranslator.Wpf.ViewModel
 				ComboBoxLanguages.Items.Add(language);
 			}
 
-			ComboBoxLanguages.SelectedValue = Configurations.ApplicationConfiguration.ToLanguage.Extension;
+			ComboBoxLanguages.SelectedValue = Serviceses.ApplicationConfiguration.ToLanguage.Extension;
 		}
 
 		private Task<Release> GetRelease()
 		{
-			return _gitHubClient.Repository.Release.GetLatest(Configurations.ApplicationConfiguration.GitHubRepositoryOwnerName, Configurations.ApplicationConfiguration.GitHubRepositoryName);
+			return _gitHubClient.Repository.Release.GetLatest(Serviceses.ApplicationConfiguration.GitHubRepositoryOwnerName, Serviceses.ApplicationConfiguration.GitHubRepositoryName);
 		}
 
 		private void GithubButtonClick(object sender, RoutedEventArgs e)
@@ -127,7 +127,7 @@ namespace DynamicTranslator.Wpf.ViewModel
 				{
 					NewVersionButton.Visibility = Visibility.Visible;
 					NewVersionButton.Content = $"A new version {incomingVersion} released, update now!";
-					Configurations.ApplicationConfiguration.UpdateLink = release.Assets.FirstOrDefault()?.BrowserDownloadUrl;
+					Serviceses.ApplicationConfiguration.UpdateLink = release.Assets.FirstOrDefault()?.BrowserDownloadUrl;
 				});
 			}
 		}
@@ -148,7 +148,7 @@ namespace DynamicTranslator.Wpf.ViewModel
 
 		private void NewVersionButtonClick(object sender, RoutedEventArgs e)
 		{
-			string updateLink = Configurations.ApplicationConfiguration.UpdateLink;
+			string updateLink = Serviceses.ApplicationConfiguration.UpdateLink;
 			if (!string.IsNullOrEmpty(updateLink))
 			{
 				Process.Start(updateLink);
@@ -157,38 +157,38 @@ namespace DynamicTranslator.Wpf.ViewModel
 
 		private void PrepareTranslators()
 		{
-			Configurations.ActiveTranslatorConfiguration.DeActivate();
+			Serviceses.ActiveTranslatorConfiguration.DeActivate();
 
 			if (CheckBoxGoogleTranslate.IsChecked != null && CheckBoxGoogleTranslate.IsChecked.Value)
 			{
-				Configurations.ActiveTranslatorConfiguration.Activate(TranslatorType.Google);
+				Serviceses.ActiveTranslatorConfiguration.Activate(TranslatorType.Google);
 			}
 
 			if (CheckBoxYandexTranslate.IsChecked != null && CheckBoxYandexTranslate.IsChecked.Value)
 			{
-				Configurations.ActiveTranslatorConfiguration.Activate(TranslatorType.Yandex);
+				Serviceses.ActiveTranslatorConfiguration.Activate(TranslatorType.Yandex);
 			}
 
 			if (CheckBoxTureng.IsChecked != null && CheckBoxTureng.IsChecked.Value)
 			{
-				Configurations.ActiveTranslatorConfiguration.Activate(TranslatorType.Tureng);
+				Serviceses.ActiveTranslatorConfiguration.Activate(TranslatorType.Tureng);
 			}
 
 			if (CheckBoxSesliSozluk.IsChecked != null && CheckBoxSesliSozluk.IsChecked.Value)
 			{
-				Configurations.ActiveTranslatorConfiguration.Activate(TranslatorType.SesliSozluk);
+				Serviceses.ActiveTranslatorConfiguration.Activate(TranslatorType.SesliSozluk);
 			}
 
 			if (CheckBoxPrompt.IsChecked != null && CheckBoxPrompt.IsChecked.Value)
 			{
-				Configurations.ActiveTranslatorConfiguration.Activate(TranslatorType.Prompt);
+				Serviceses.ActiveTranslatorConfiguration.Activate(TranslatorType.Prompt);
 			}
 
-			if (!Configurations.ActiveTranslatorConfiguration.ActiveTranslators.Any())
+			if (!Serviceses.ActiveTranslatorConfiguration.ActiveTranslators.Any())
 			{
 				foreach (object value in Enum.GetValues(typeof(TranslatorType)))
 				{
-					Configurations.ActiveTranslatorConfiguration.Activate((TranslatorType)value);
+					Serviceses.ActiveTranslatorConfiguration.Activate((TranslatorType)value);
 				}
 			}
 		}
