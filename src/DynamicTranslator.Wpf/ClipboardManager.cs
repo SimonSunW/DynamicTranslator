@@ -22,7 +22,7 @@ namespace DynamicTranslator.Wpf
             {
                 return Clipboard.ContainsText() && !string.IsNullOrEmpty(Clipboard.GetText().Trim());
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return ContainsText();
             }
