@@ -15,7 +15,7 @@ using Language = DynamicTranslator.Model.Language;
 
 namespace DynamicTranslator.Wpf.ViewModel
 {
-	public partial class MainWindow
+	public partial class MainWindow : Window
 	{
 		public DynamicTranslatorServices Serviceses { get; set; }
 		public TranslatorBootstrapper Translator { get; private set; }

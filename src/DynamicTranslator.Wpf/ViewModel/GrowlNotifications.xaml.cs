@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Speech.Synthesis;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -111,19 +110,19 @@ namespace DynamicTranslator.Wpf.ViewModel
                     await Dispatcher.InvokeAsync(
                         () =>
                         {
-                            var notification = ((FrameworkElement)sender).DataContext as Notification;
-                            using (var synthesizer = new SpeechSynthesizer())
-                            {
-                                synthesizer.SelectVoiceByHints(VoiceGender.Female, VoiceAge.Adult);
-                                synthesizer.SetOutputToDefaultAudioDevice();
-                                synthesizer.Volume = 100;
-                                synthesizer.Rate = 0;
+                            //var notification = ((FrameworkElement)sender).DataContext as Notification;
+                            //using (var synthesizer = new SpeechSynthesizer())
+                            //{
+                            //    synthesizer.SelectVoiceByHints(VoiceGender.Female, VoiceAge.Adult);
+                            //    synthesizer.SetOutputToDefaultAudioDevice();
+                            //    synthesizer.Volume = 100;
+                            //    synthesizer.Rate = 0;
 
-                                if (notification != null)
-                                {
-                                    synthesizer.Speak(notification.Title);
-                                }
-                            }
+                            //    if (notification != null)
+                            //    {
+                            //        synthesizer.Speak(notification.Title);
+                            //    }
+                            //}
                         });
                 });
         }

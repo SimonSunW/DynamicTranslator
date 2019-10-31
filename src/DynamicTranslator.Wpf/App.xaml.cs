@@ -9,7 +9,7 @@ using DynamicTranslator.Wpf.ViewModel;
 
 namespace DynamicTranslator.Wpf
 {
-	public partial class App
+	public partial class App : Application
 	{
 		private Mutex _mutex;
 		private const string MutexName = @"Global\1109F104-B4B4-4ED1-920C-F4D8EFE9E834}";
@@ -21,15 +21,15 @@ namespace DynamicTranslator.Wpf
 			GuardAgainstMultipleInstances();
 		}
 
-		protected override void OnStartup(StartupEventArgs eventArgs)
-		{
-			var configurations = new DynamicTranslatorServices();
+        protected override void OnStartup(StartupEventArgs eventArgs)
+        {
+            var configurations = new DynamicTranslatorServices();
             var mainWindow = new MainWindow { Serviceses = configurations };
-			mainWindow.InitializeComponent();
-			mainWindow.Show();
-		}
+            mainWindow.InitializeComponent();
+            mainWindow.Show();
+        }
 
-		private void GuardAgainstMultipleInstances()
+        private void GuardAgainstMultipleInstances()
 		{
 			string user = Environment.UserDomainName + Path.DirectorySeparatorChar + Environment.UserName;
 
@@ -49,7 +49,7 @@ namespace DynamicTranslator.Wpf
 
 					mutexSecurity.AddAccessRule(rule);
 
-					_mutex = new Mutex(true, MutexName, out _isMutexCreated, mutexSecurity);
+					_mutex = new Mutex(true, MutexName, out _isMutexCreated);
 				}
 			}
 			catch (UnauthorizedAccessException)
