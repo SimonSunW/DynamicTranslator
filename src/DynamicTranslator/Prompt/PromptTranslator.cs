@@ -14,7 +14,7 @@ namespace DynamicTranslator.Prompt
         private const string Ts = "MainSite";
         private const string Url = "http://www.online-translator.com/services/TranslationService.asmx/GetTranslateNew";
 
-        public PromptTranslator(DynamicTranslatorServices services)
+        public PromptTranslator(WireUp services)
         {
             var cfg = new PromptTranslatorConfiguration(services.ActiveTranslatorConfiguration,
                 services.ApplicationConfiguration)
@@ -26,7 +26,7 @@ namespace DynamicTranslator.Prompt
                 SupportedLanguages = LanguageMapping.Prompt.ToLanguages()
             };
 
-            services.PromptTranslatorConfiguration = cfg;
+            services.AddTranslatorConfiguration(cfg);
 
             services.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Prompt,
                 async (translateRequest, token) =>

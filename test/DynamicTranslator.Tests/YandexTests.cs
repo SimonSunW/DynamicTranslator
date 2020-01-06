@@ -13,11 +13,11 @@ namespace DynamicTranslator.Tests
 {
     public class YandexTests
     {
-        private readonly DynamicTranslatorServices _services;
+        private readonly WireUp _services;
 
         public YandexTests()
         {
-            _services = new DynamicTranslatorServices(builder =>
+            _services = new WireUp(builder =>
              {
                  builder.AddInMemoryCollection(new[]
                  {
@@ -50,7 +50,7 @@ namespace DynamicTranslator.Tests
         [Fact]
         public async Task Yandex_should_work()
         {
-            var yandex = new YandexTranslator(_services);
+            var yandex = new YandexTranslator();
             _services.ActiveTranslatorConfiguration.Activate(TranslatorType.Yandex);
             string result = await _services.FindBy("city", TranslatorType.Yandex);
             result.Should().Be("Sehir".ToLower());

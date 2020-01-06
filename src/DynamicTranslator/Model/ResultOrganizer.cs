@@ -7,13 +7,13 @@ namespace DynamicTranslator.Model
 {
     public class ResultOrganizer
     {
-        public Task<string> OrganizeResult(ICollection<TranslateResult> foundedMeans, string currentString, out string failedResults)
+        public string OrganizeResult(ICollection<TranslateResult> foundedMeans, string currentString, out string failedResults)
         {
             string succeededResults = Organize(foundedMeans, currentString, true);
 
             failedResults = Organize(foundedMeans, currentString, false);
 
-            return Task.FromResult(succeededResults);
+            return succeededResults;
         }
 
         private string Organize(ICollection<TranslateResult> foundedMeans, string currentString, bool isSucceeded)

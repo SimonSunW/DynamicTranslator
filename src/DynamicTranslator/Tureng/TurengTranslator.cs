@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Net.Cache;
 using System.Net.Http;
 using System.Text;
 using DynamicTranslator.Configuration;
@@ -16,7 +15,7 @@ namespace DynamicTranslator.Tureng
         private const string AcceptLanguage = "en-US,en;q=0.8,tr;q=0.6";
         private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-        public TurengTranslator(DynamicTranslatorServices services)
+        public TurengTranslator(WireUp services)
         {
             var tureng = new TurengTranslatorConfiguration(services.ActiveTranslatorConfiguration,
                 services.ApplicationConfiguration)
@@ -25,12 +24,11 @@ namespace DynamicTranslator.Tureng
                 SupportedLanguages = LanguageMapping.Tureng.ToLanguages()
             };
 
-            services.TurengTranslatorConfiguration = tureng;
-
+            services.AddTranslatorConfiguration(tureng);
             services.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Tureng, Find(services, tureng));
         }
 
-        private Find Find(DynamicTranslatorServices services, TurengTranslatorConfiguration tureng) =>
+        private Find Find(WireUp services, TurengTranslatorConfiguration tureng) =>
             async (translateRequest, token) =>
             {
                 var uri = new Uri(tureng.Url + translateRequest.CurrentText);

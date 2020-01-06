@@ -15,11 +15,11 @@ namespace DynamicTranslator.Tests
 {
     public class GoogleTests
     {
-        private readonly DynamicTranslatorServices _services;
+        private readonly WireUp _services;
 
         public GoogleTests()
         {
-            _services = new DynamicTranslatorServices(builder =>
+            _services = new WireUp(builder =>
              {
                  builder.AddInMemoryCollection(new[]
                  {
@@ -67,7 +67,7 @@ namespace DynamicTranslator.Tests
         [Fact]
         public async Task Google_should_work()
         {
-            var google = new GoogleTranslator(_services);
+            var google = new GoogleTranslator(new GoogleTranslatorConfiguration(new ActiveTranslatorConfiguration(), new ApplicationConfiguration()),new ApplicationConfiguration(), new TranslatorClient(new HttpClient()) );
             _services.ActiveTranslatorConfiguration.Activate(TranslatorType.Google);
             string result = await _services.FindBy("city", TranslatorType.Google);
             result.Should().Be("Sehir");

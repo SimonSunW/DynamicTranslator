@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>winExe</OutputType>
     <RootNamespace>DynamicTranslator.Wpf</RootNamespace>
     <AssemblyName>DynamicTranslator.Wpf</AssemblyName>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="2.6.0" />
-    <PackageReference Include="MaterialDesignColors" Version="1.2.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="3.0.1" />
+    <PackageReference Include="MaterialDesignColors" Version="1.2.2" />
     <PackageReference Include="MouseKeyHook" Version="5.6.0" />
   </ItemGroup>
 

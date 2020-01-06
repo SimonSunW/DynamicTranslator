@@ -1,10 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using DynamicTranslator.Google;
 
 namespace DynamicTranslator
 {
-    public class GoogleAnalyticsTracker : IObserver<long>
+    public class GoogleAnalyticsTracker
     {
         private readonly GoogleAnalyticsService _googleAnalyticsService;
 
@@ -13,20 +12,13 @@ namespace DynamicTranslator
             _googleAnalyticsService = googleAnalyticsService;
         }
 
-        public void OnCompleted() {}
-
-        public void OnError(Exception error) {}
-
-        public void OnNext(long value)
+        public Task Track()
         {
-            Task.Run(() =>
-            {
-                _googleAnalyticsService.TrackAppScreenAsync("DynamicTranslator",
-                    ApplicationVersion.GetCurrentVersion(),
-                    "dynamictranslator",
-                    "dynamictranslator",
-                    "MainWindow");
-            });
+            return _googleAnalyticsService.TrackAppScreenAsync("DynamicTranslator",
+                ApplicationVersion.GetCurrentVersion(),
+                "dynamictranslator",
+                "dynamictranslator",
+                "MainWindow");
         }
     }
 }

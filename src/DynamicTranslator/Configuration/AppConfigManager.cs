@@ -1,9 +1,4 @@
-﻿using System.Configuration;
-using System.Linq;
-using IniParser;
-using IniParser.Model.Configuration;
-using IniParser.Parser;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace DynamicTranslator.Configuration
 {
