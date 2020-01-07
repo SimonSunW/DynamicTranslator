@@ -19,12 +19,12 @@ namespace DynamicTranslator.Yandex
 
         private readonly YandexTranslatorConfiguration _yandex;
         private readonly ApplicationConfiguration _applicationConfiguration;
-        private readonly TranslatorClient _translatorClient;
-        public YandexTranslator (YandexTranslatorConfiguration yandex, ApplicationConfiguration applicationConfiguration, TranslatorClient translatorClient)
+        private readonly IHttpClientFactory _httpClientFactory;
+        public YandexTranslator (YandexTranslatorConfiguration yandex, ApplicationConfiguration applicationConfiguration, IHttpClientFactory httpClientFactory)
         {
             _yandex = yandex;
             _applicationConfiguration = applicationConfiguration;
-            _translatorClient = translatorClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
@@ -38,7 +38,7 @@ namespace DynamicTranslator.Yandex
                                                     .Append(Headers.Ampersand)
                                                     .Append($"text={Uri.EscapeUriString(request.CurrentText)}")));
 
-            HttpResponseMessage response = await _translatorClient.HttpClient.With(client => { client.BaseAddress = new Uri(BaseUrl); }).PostAsync(address, null, cancellationToken);
+            HttpResponseMessage response = await _httpClientFactory.CreateClient("translator").With(client => { client.BaseAddress = new Uri(BaseUrl); }).PostAsync(address, null, cancellationToken);
             string mean = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {

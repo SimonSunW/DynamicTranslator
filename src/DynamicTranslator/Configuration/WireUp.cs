@@ -53,10 +53,10 @@ namespace DynamicTranslator.Configuration
                     prompt.SupportedLanguages = LanguageMapping.Prompt.ToLanguages();
                 })
                 .AddSesliSozlukTranslator(sesliSozluk =>
-                    {
-                        sesliSozluk.SupportedLanguages = LanguageMapping.SesliSozluk.ToLanguages();
-                        sesliSozluk.Url = "http://www.seslisozluk.net/c%C3%BCmle-%C3%A7eviri/";
-                    })
+                {
+                    sesliSozluk.SupportedLanguages = LanguageMapping.SesliSozluk.ToLanguages();
+                    sesliSozluk.Url = "http://www.seslisozluk.net/c%C3%BCmle-%C3%A7eviri/";
+                })
                 .AddTurengTranslator(tureng =>
                 {
                     tureng.SupportedLanguages = LanguageMapping.Tureng.ToLanguages();
@@ -90,6 +90,7 @@ namespace DynamicTranslator.Configuration
                 })
                 .AddTransient<GoogleAnalyticsTracker>()
                 .AddTransient<GoogleLanguageDetector>()
+                .AddTransient<GoogleAnalyticsService>()
                 .AddHttpClient<TranslatorClient>("translator")
                 .ConfigurePrimaryHttpMessageHandler(sp => MessageHandler);
 

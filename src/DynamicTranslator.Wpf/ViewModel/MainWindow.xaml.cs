@@ -38,7 +38,6 @@ namespace DynamicTranslator.Wpf.ViewModel
                 services.AddSingleton<GrowlNotifications>();
                 services.AddTransient<TranslatorBootstrapper>();
                 services.AddTransient<Notifier>();
-                services.AddTransient<GoogleAnalyticsService>();
             });
             ServiceProvider = wireUp.ServiceProvider;
         }
@@ -105,15 +104,10 @@ namespace DynamicTranslator.Wpf.ViewModel
         {
             return _gitHubClient.Repository.Release.GetLatest("DynamicTranslator", "DynamicTranslator");
         }
-
-        private void GithubButtonClick(object sender, RoutedEventArgs e)
-        {
-            Process.Start("https://github.com/DynamicTranslator/DynamicTranslator");
-        }
-
+        
         private void InitializeVersionChecker()
         {
-            NewVersionButton.Visibility = Visibility.Hidden;
+            //NewVersionButton.Visibility = Visibility.Hidden;
             CheckVersion();
         }
 
@@ -126,8 +120,8 @@ namespace DynamicTranslator.Wpf.ViewModel
             if (_isNewVersion(incomingVersion))
                 this.DispatchingAsync(() =>
                 {
-                    NewVersionButton.Visibility = Visibility.Visible;
-                    NewVersionButton.Content = $"A new version {incomingVersion} released, update now!";
+                    //NewVersionButton.Visibility = Visibility.Visible;
+                    //NewVersionButton.Content = $"A new version {incomingVersion} released, update now!";
                     _applicationConfiguration.UpdateLink = release.Assets.FirstOrDefault()?.BrowserDownloadUrl;
                 });
         }

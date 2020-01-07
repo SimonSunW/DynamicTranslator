@@ -40,10 +40,6 @@
                     </LinearGradientBrush>
                 </Button.Background>
             </Button>
-            <Button Click="GithubButtonClick" Height="Auto" Width="Auto" Background="Transparent"
-                    Margin="158,269,159,-21">
-                <Image Source="../Resources/github_100x150.png" />
-            </Button>
             <Grid x:Name="LanguagesGrid" Margin="0,134,0,0" RenderTransformOrigin="0.509,0.576" Height="86"
                   VerticalAlignment="Top">
                 <CheckBox x:Name="CheckBoxGoogleTranslate" Content="Google Translate" HorizontalAlignment="Left"
@@ -57,9 +53,6 @@
                 <CheckBox x:Name="CheckBoxPrompt" Content="Prompt Translate" HorizontalAlignment="Left"
                     Margin="205,56,0,0" VerticalAlignment="Top" IsChecked="True" />
             </Grid>
-            <Button x:Name="NewVersionButton" Content="Button" HorizontalAlignment="Left" Margin="10,237,0,0"
-                    VerticalAlignment="Top" Width="363" Height="27" Click="NewVersionButtonClick" />
-
         </Grid>
 
     </StackPanel>
