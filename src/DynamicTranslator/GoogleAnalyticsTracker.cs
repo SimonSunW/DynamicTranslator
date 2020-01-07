@@ -3,11 +3,16 @@ using DynamicTranslator.Google;
 
 namespace DynamicTranslator
 {
-    public class GoogleAnalyticsTracker
+    public interface IGoogleAnalyticsTracker
     {
-        private readonly GoogleAnalyticsService _googleAnalyticsService;
+        Task Track();
+    }
 
-        public GoogleAnalyticsTracker(GoogleAnalyticsService googleAnalyticsService)
+    public class GoogleAnalyticsTracker : IGoogleAnalyticsTracker
+    {
+        private readonly IGoogleAnalyticsService _googleAnalyticsService;
+
+        public GoogleAnalyticsTracker(IGoogleAnalyticsService googleAnalyticsService)
         {
             _googleAnalyticsService = googleAnalyticsService;
         }

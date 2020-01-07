@@ -17,11 +17,9 @@ namespace DynamicTranslator.Configuration
     {
         public HttpMessageHandler MessageHandler { get; set; } = new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
 
-        public Func<TranslatorClient> ClientFactory => () => ServiceProvider.GetService<TranslatorClient>();
-
         public IServiceProvider ServiceProvider { get; }
 
-        public WireUp(Action<IConfigurationBuilder> configure = null, Action<IServiceCollection> configureServices = null)
+        public WireUp(Action<IConfigurationBuilder> configure = null, Action<IServiceCollection> postConfigureServices = null)
         {
             var cb = new ConfigurationBuilder()
                 .AddIniFile("DynamicTranslator.ini", configure != null, false);
@@ -80,21 +78,20 @@ namespace DynamicTranslator.Configuration
                         IsExtraLoggingEnabled = true,
                         LeftOffset = 500,
                         TopOffset = 15,
-                        SearchableCharacterLimit = 200,
-                        IsNoSqlDatabaseEnabled = true,
+                        SearchableCharacterLimit = int.Parse(configuration["CharacterLimit"] ?? "300"),
                         MaxNotifications = 4,
                         ToLanguage = new Language(existingToLanguage, LanguageMapping.All[existingToLanguage]),
                         FromLanguage = new Language(existingFromLanguage, LanguageMapping.All[existingFromLanguage]),
                         ClientConfiguration = clientConfiguration
                     };
                 })
-                .AddTransient<GoogleAnalyticsTracker>()
-                .AddTransient<GoogleLanguageDetector>()
-                .AddTransient<GoogleAnalyticsService>()
-                .AddHttpClient<TranslatorClient>("translator")
+                .AddTransient<IGoogleAnalyticsTracker, GoogleAnalyticsTracker>()
+                .AddTransient<IGoogleLanguageDetector, GoogleLanguageDetector>()
+                .AddTransient<IGoogleAnalyticsService, GoogleAnalyticsService>()
+                .AddHttpClient<TranslatorClient>(TranslatorClient.Name)
                 .ConfigurePrimaryHttpMessageHandler(sp => MessageHandler);
 
-            configureServices?.Invoke(services);
+            postConfigureServices?.Invoke(services);
 
             ServiceProvider = services.BuildServiceProvider();
         }

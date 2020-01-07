@@ -30,9 +30,9 @@ namespace DynamicTranslator.Wpf.ViewModel
 
         public MainWindow()
         {
-            var wireUp = new WireUp(configureServices: services =>
+            var wireUp = new WireUp(postConfigureServices: services =>
             {
-                services.AddTransient<Finder>();
+                services.AddTransient<IFinder, Finder>();
                 services.AddSingleton<Notifications>();
                 services.AddTransient<ClipboardManager>();
                 services.AddSingleton<GrowlNotifications>();
@@ -77,7 +77,7 @@ namespace DynamicTranslator.Wpf.ViewModel
             {
                 BtnSwitch.Content = "Stop Translator";
 
-                var selectedLanguageName = ((Language) ComboBoxLanguages.SelectedItem).Name;
+                var selectedLanguageName = ((Language)ComboBoxLanguages.SelectedItem).Name;
                 _applicationConfiguration.ToLanguage =
                     new Language(selectedLanguageName, LanguageMapping.All[selectedLanguageName]);
 
@@ -104,7 +104,7 @@ namespace DynamicTranslator.Wpf.ViewModel
         {
             return _gitHubClient.Repository.Release.GetLatest("DynamicTranslator", "DynamicTranslator");
         }
-        
+
         private void InitializeVersionChecker()
         {
             //NewVersionButton.Visibility = Visibility.Hidden;

@@ -9,12 +9,11 @@ using DynamicTranslator.Wpf.ViewModel;
 using Gma.System.MouseKeyHook;
 using System.Reactive.Concurrency;
 using DynamicTranslator.Configuration;
-using DynamicTranslator.Google;
 using Point = System.Drawing.Point;
 
 namespace DynamicTranslator.Wpf
 {
-    public class TranslatorBootstrapper
+    public class TranslatorBootstrapper : IDisposable
     {
         private readonly ClipboardManager _clipboardManager;
         private readonly ApplicationConfiguration _applicationConfiguration;
@@ -26,16 +25,15 @@ namespace DynamicTranslator.Wpf
         private Point _mouseSecondPoint;
         private IDisposable _syncObserver;
         private readonly InterlockedBoolean _isMouseDown = new InterlockedBoolean();
-        private readonly Finder _finder;
-        private readonly GoogleAnalyticsTracker _googleAnalyticsTracker;
+        private readonly IFinder _finder;
+        private readonly IGoogleAnalyticsTracker _googleAnalyticsTracker;
 
         public TranslatorBootstrapper(GrowlNotifications growlNotifications, 
             ClipboardManager clipboardManager,
-            ApplicationConfiguration applicationConfiguration, 
-            Finder finder, 
-            GoogleAnalyticsTracker googleAnalyticsTracker)
+            ApplicationConfiguration applicationConfiguration,
+            IFinder finder, 
+            IGoogleAnalyticsTracker googleAnalyticsTracker)
         {
-          
             _growlNotifications = growlNotifications;
             _clipboardManager = clipboardManager;
             _applicationConfiguration = applicationConfiguration;
@@ -100,7 +98,6 @@ namespace DynamicTranslator.Wpf
         {
             _globalMouseHook.Dispose();
         }
-        
         private void MouseDoubleClicked(object sender, MouseEventArgs e)
         {
             _isMouseDown.Set(false);
@@ -145,7 +142,7 @@ namespace DynamicTranslator.Wpf
                 .FromEventPattern<WhenClipboardContainsTextEventArgs>(
                     h => WhenClipboardContainsTextEventHandler += h,
                     h => WhenClipboardContainsTextEventHandler -= h)
-                .Select(pattern => Observable.FromAsync(token => _finder.Find(pattern, token)))
+                .Select(pattern => Observable.FromAsync(token => _finder.Find(pattern.EventArgs.CurrentString, token)))
                 .Concat()
                 .Subscribe();
 
@@ -168,7 +165,6 @@ namespace DynamicTranslator.Wpf
             if (_cancellationTokenSource.Token.IsCancellationRequested) return;
             _isMouseDown.Set(false);
             SendCopyCommand();
-
         }
 
         private void MouseDragStarted(object sender, MouseEventArgs e)

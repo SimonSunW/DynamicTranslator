@@ -9,18 +9,24 @@ using DynamicTranslator.Extensions;
 
 namespace DynamicTranslator.Google
 {
-    public class GoogleLanguageDetector
+    public interface IGoogleLanguageDetector
+    {
+        Task<string> DetectLanguage(string text, CancellationToken token = default);
+    }
+
+    public class GoogleLanguageDetector : IGoogleLanguageDetector
     {
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly GoogleTranslatorConfiguration _google;
-        private readonly TranslatorClient _translatorClient;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         public GoogleLanguageDetector(GoogleTranslatorConfiguration google,
-            ApplicationConfiguration applicationConfiguration, TranslatorClient translatorClient)
+            ApplicationConfiguration applicationConfiguration,
+            IHttpClientFactory httpClientFactory)
         {
             _google = google;
             _applicationConfiguration = applicationConfiguration;
-            _translatorClient = translatorClient;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<string> DetectLanguage(string text, CancellationToken token = default)
@@ -31,7 +37,7 @@ namespace DynamicTranslator.Google
                 _applicationConfiguration.ToLanguage.Extension,
                 HttpUtility.UrlEncode(text));
 
-            var httpClient = _translatorClient.HttpClient;
+            var httpClient = _httpClientFactory.CreateClient("translator");
             var request = new HttpRequestMessage {Method = HttpMethod.Get};
             request.Headers.Add(Headers.AcceptLanguage, "en-US,en;q=0.8,tr;q=0.6");
             request.Headers.Add(Headers.AcceptEncoding, "gzip, deflate, sdch");

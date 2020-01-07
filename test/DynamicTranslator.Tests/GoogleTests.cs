@@ -15,11 +15,11 @@ namespace DynamicTranslator.Tests
 {
     public class GoogleTests
     {
-        private readonly WireUp _services;
+        private readonly WireUp _wireUp;
 
         public GoogleTests()
         {
-            _services = new WireUp(builder =>
+            _wireUp = new WireUp(builder =>
              {
                  builder.AddInMemoryCollection(new[]
                  {
@@ -33,22 +33,6 @@ namespace DynamicTranslator.Tests
         }
 
         private static TestMessageHandler GoogleMessageHandler()
-        {
-            return new TestMessageHandler
-            {
-                Sender = message => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
-                {
-                    Content = new StringContent(JsonConvert.SerializeObject(
-
-                        new Dictionary<string, object>()
-                        {
-                            ["sentences"] = new JArray("Sehir")
-                        }))
-                })
-            };
-        }
-
-        private static TestMessageHandler YandexMessageHandler()
         {
             return new TestMessageHandler
             {

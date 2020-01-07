@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reactive;
 using System.Threading;
 using System.Threading.Tasks;
 using DynamicTranslator.Configuration;
@@ -10,10 +9,15 @@ using DynamicTranslator.Model;
 
 namespace DynamicTranslator.Wpf.Observers
 {
-    public class Finder
+    public interface IFinder
     {
-        private readonly GoogleAnalyticsService _googleAnalytics;
-        private readonly GoogleLanguageDetector _languageDetector;
+        Task Find(string currentString, CancellationToken cancellationToken);
+    }
+
+    public class Finder : IFinder
+    {
+        private readonly IGoogleAnalyticsService _googleAnalytics;
+        private readonly IGoogleLanguageDetector _languageDetector;
         private readonly ActiveTranslatorConfiguration _activeTranslatorConfiguration;
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly Notifier _notifier;
@@ -21,8 +25,8 @@ namespace DynamicTranslator.Wpf.Observers
         private readonly IEnumerable<ITranslator> _translators;
 
         public Finder(Notifier notifier,
-            GoogleLanguageDetector languageDetector,
-            GoogleAnalyticsService googleAnalytics,
+            IGoogleLanguageDetector languageDetector,
+            IGoogleAnalyticsService googleAnalytics,
             ActiveTranslatorConfiguration activeTranslatorConfiguration,
             IEnumerable<ITranslator> translators,
             ApplicationConfiguration applicationConfiguration)
@@ -36,12 +40,10 @@ namespace DynamicTranslator.Wpf.Observers
         }
 
 
-        public async Task Find(EventPattern<WhenClipboardContainsTextEventArgs> value, CancellationToken cancellationToken)
+        public async Task Find(string currentString, CancellationToken cancellationToken)
         {
             try
             {
-                var currentString = value.EventArgs.CurrentString;
-
                 if (_previousString == currentString) return;
 
                 _previousString = currentString;
@@ -64,7 +66,7 @@ namespace DynamicTranslator.Wpf.Observers
             CancellationToken cancellationToken)
         {
             var findFunc = _translators
-                .Where(x => _activeTranslatorConfiguration.Translators.Select(x => x.Type).Contains(x.GetType()))
+                .Where(x => _activeTranslatorConfiguration.Translators.Select(translator => translator.Type).Contains(x.GetType()))
                 .Select(x => x.Translate(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken))
                 .ToList();
 

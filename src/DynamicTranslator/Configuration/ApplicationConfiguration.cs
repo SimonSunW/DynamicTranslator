@@ -18,8 +18,6 @@ namespace DynamicTranslator.Configuration
 
         public bool IsLanguageDetectionEnabled { get; set; }
 
-        public bool IsNoSqlDatabaseEnabled { get; set; }
-
         public bool IsToLanguageTurkish => ToLanguage.Extension == "tr";
 
         public int LeftOffset { get; set; }
