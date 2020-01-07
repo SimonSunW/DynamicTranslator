@@ -16,10 +16,9 @@ namespace DynamicTranslator.Wpf
 {
     public class TranslatorBootstrapper
     {
-        private readonly WireUp _services;
         private readonly ClipboardManager _clipboardManager;
+        private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly GrowlNotifications _growlNotifications;
-        private readonly MainWindow _mainWindow;
         private CancellationTokenSource _cancellationTokenSource;
         private IDisposable _finderObservable;
         private readonly IKeyboardMouseEvents _globalMouseHook;
@@ -27,13 +26,21 @@ namespace DynamicTranslator.Wpf
         private Point _mouseSecondPoint;
         private IDisposable _syncObserver;
         private readonly InterlockedBoolean _isMouseDown = new InterlockedBoolean();
+        private readonly Finder _finder;
+        private readonly GoogleAnalyticsTracker _googleAnalyticsTracker;
 
-        public TranslatorBootstrapper(MainWindow mainWindow, GrowlNotifications growlNotifications, WireUp services, ClipboardManager clipboardManager)
+        public TranslatorBootstrapper(GrowlNotifications growlNotifications, 
+            ClipboardManager clipboardManager,
+            ApplicationConfiguration applicationConfiguration, 
+            Finder finder, 
+            GoogleAnalyticsTracker googleAnalyticsTracker)
         {
-            _mainWindow = mainWindow;
+          
             _growlNotifications = growlNotifications;
-            _services = services;
             _clipboardManager = clipboardManager;
+            _applicationConfiguration = applicationConfiguration;
+            _finder = finder;
+            _googleAnalyticsTracker = googleAnalyticsTracker;
             _globalMouseHook = Hook.GlobalEvents();
         }
 
@@ -65,12 +72,6 @@ namespace DynamicTranslator.Wpf
             IsInitialized = true;
         }
 
-        public void SubscribeShutdownEvents()
-        {
-            _mainWindow.Dispatcher.ShutdownStarted += (sender, args) => { _cancellationTokenSource?.Cancel(false); };
-            _mainWindow.Dispatcher.ShutdownFinished += (sender, args) => { Dispose(); };
-        }
-
         public bool IsInitialized { get; private set; }
 
         private void SendCopyCommand()
@@ -91,8 +92,8 @@ namespace DynamicTranslator.Wpf
 
         private void ConfigureNotificationMeasurements()
         {
-            _growlNotifications.Top = SystemParameters.WorkArea.Top + _services.ApplicationConfiguration.TopOffset;
-            _growlNotifications.Left = SystemParameters.WorkArea.Left + SystemParameters.WorkArea.Width - _services.ApplicationConfiguration.LeftOffset;
+            _growlNotifications.Top = SystemParameters.WorkArea.Top + _applicationConfiguration.TopOffset;
+            _growlNotifications.Left = SystemParameters.WorkArea.Left + SystemParameters.WorkArea.Width - _applicationConfiguration.LeftOffset;
         }
 
         private void DisposeHooks()
@@ -140,26 +141,18 @@ namespace DynamicTranslator.Wpf
 
         private void StartObservers()
         {
-            var finder = new Finder(
-                new Notifier(_growlNotifications),
-                new GoogleLanguageDetector(),
-                _services,
-                new GoogleAnalyticsService(_services.ApplicationConfiguration));
-
-            var googleAnalytics = new GoogleAnalyticsTracker(new GoogleAnalyticsService(_services.ApplicationConfiguration));
-
             _finderObservable = Observable
                 .FromEventPattern<WhenClipboardContainsTextEventArgs>(
                     h => WhenClipboardContainsTextEventHandler += h,
                     h => WhenClipboardContainsTextEventHandler -= h)
-                .Select(pattern => Observable.FromAsync(token => finder.Find(pattern, token)))
+                .Select(pattern => Observable.FromAsync(token => _finder.Find(pattern, token)))
                 .Concat()
                 .Subscribe();
 
             _syncObserver = Observable
                 .Interval(TimeSpan.FromSeconds(7.0), TaskPoolScheduler.Default)
                 .StartWith(-1L)
-                .Select((l, i) => googleAnalytics.Track())
+                .Select((l, i) => _googleAnalyticsTracker.Track())
                 .Subscribe();
         }
 

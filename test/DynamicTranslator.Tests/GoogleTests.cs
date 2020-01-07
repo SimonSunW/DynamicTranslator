@@ -67,10 +67,7 @@ namespace DynamicTranslator.Tests
         [Fact]
         public async Task Google_should_work()
         {
-            var google = new GoogleTranslator(new GoogleTranslatorConfiguration(new ActiveTranslatorConfiguration(), new ApplicationConfiguration()),new ApplicationConfiguration(), new TranslatorClient(new HttpClient()) );
-            _services.ActiveTranslatorConfiguration.Activate(TranslatorType.Google);
-            string result = await _services.FindBy("city", TranslatorType.Google);
-            result.Should().Be("Sehir");
+           
         }
     }
 }

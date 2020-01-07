@@ -3,6 +3,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.Model;
@@ -10,46 +12,18 @@ using HtmlAgilityPack;
 
 namespace DynamicTranslator.Tureng
 {
-    public class TurengTranslator
+    public class TurengTranslator:ITranslator
     {
         private const string AcceptLanguage = "en-US,en;q=0.8,tr;q=0.6";
         private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36";
 
-        public TurengTranslator(WireUp services)
+        private readonly TurengTranslatorConfiguration _tureng;
+        private readonly TranslatorClient _translatorClient;
+        public TurengTranslator(TurengTranslatorConfiguration tureng, TranslatorClient translatorClient)
         {
-            var tureng = new TurengTranslatorConfiguration(services.ActiveTranslatorConfiguration,
-                services.ApplicationConfiguration)
-            {
-                Url = "http://tureng.com/search/",
-                SupportedLanguages = LanguageMapping.Tureng.ToLanguages()
-            };
-
-            services.AddTranslatorConfiguration(tureng);
-            services.ActiveTranslatorConfiguration.AddTranslator(TranslatorType.Tureng, Find(services, tureng));
+            _tureng = tureng;
+            _translatorClient = translatorClient;
         }
-
-        private Find Find(WireUp services, TurengTranslatorConfiguration tureng) =>
-            async (translateRequest, token) =>
-            {
-                var uri = new Uri(tureng.Url + translateRequest.CurrentText);
-
-                var httpClient = services.ClientFactory().HttpClient
-                    .With(client => { client.BaseAddress = uri; });
-
-                var req = new HttpRequestMessage { Method = HttpMethod.Get };
-                req.Headers.Add(Headers.UserAgent, UserAgent);
-                req.Headers.Add(Headers.AcceptLanguage, AcceptLanguage);
-
-                HttpResponseMessage response = await httpClient.SendAsync(req);
-                
-                string mean = string.Empty;
-                if (response.IsSuccessStatusCode)
-                {
-                    mean = OrganizeMean(await response.Content.ReadAsStringAsync(), translateRequest.FromLanguageExtension);
-                }
-
-                return new TranslateResult(true, mean);
-            };
 
         public string OrganizeMean(string text, string fromLanguageExtension)
         {
@@ -83,6 +57,27 @@ namespace DynamicTranslator.Tureng
                 .ForEach(mean => output.AppendLine(mean));
 
             return output.ToString().ToLower().Trim();
+        }
+
+        public async Task<TranslateResult> Translate(TranslateRequest translateRequest, CancellationToken cancellationToken)
+        {
+            var uri = new Uri(_tureng.Url + translateRequest.CurrentText);
+
+            var httpClient = _translatorClient.HttpClient.With(client => { client.BaseAddress = uri; });
+
+            var req = new HttpRequestMessage { Method = HttpMethod.Get };
+            req.Headers.Add(Headers.UserAgent, UserAgent);
+            req.Headers.Add(Headers.AcceptLanguage, AcceptLanguage);
+
+            HttpResponseMessage response = await httpClient.SendAsync(req,cancellationToken);
+                
+            string mean = string.Empty;
+            if (response.IsSuccessStatusCode)
+            {
+                mean = OrganizeMean(await response.Content.ReadAsStringAsync(), translateRequest.FromLanguageExtension);
+            }
+
+            return new TranslateResult(true, mean);
         }
     }
 }

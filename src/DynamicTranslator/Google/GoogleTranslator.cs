@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using DynamicTranslator.Configuration;
@@ -12,7 +13,7 @@ namespace DynamicTranslator.Google
 {
     public class GoogleTranslator : ITranslator
     {
-        private const string GoogleTranslateUrl = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&hl={1}&dt=t&dt=bd&dj=1&source=bubble&q={2}";
+        public const string Url = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl={0}&hl={1}&dt=t&dt=bd&dj=1&source=bubble&q={2}";
         private const string Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8";
         private const string AcceptEncoding = "gzip, deflate, sdch";
         private const string AcceptLanguage = "en-US,en;q=0.8,tr;q=0.6";
@@ -20,16 +21,18 @@ namespace DynamicTranslator.Google
 
         private readonly GoogleTranslatorConfiguration _google;
         private readonly ApplicationConfiguration _applicationConfiguration;
-        private readonly TranslatorClient _translatorClient;
+        private IHttpClientFactory _httpClientFactory;
 
-        public GoogleTranslator(GoogleTranslatorConfiguration google, ApplicationConfiguration applicationConfiguration, TranslatorClient translatorClient)
+        public GoogleTranslator(GoogleTranslatorConfiguration google, 
+            ApplicationConfiguration applicationConfiguration,
+            IHttpClientFactory httpClientFactory)
         {
             _google = google;
             _applicationConfiguration = applicationConfiguration;
-            _translatorClient = translatorClient;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<TranslateResult> Translate(TranslateRequest request)
+        public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
         {
             if (!_google.CanSupport() || !_google.IsActive())
             {
@@ -42,7 +45,7 @@ namespace DynamicTranslator.Google
                 _applicationConfiguration.ToLanguage.Extension,
                 HttpUtility.UrlEncode(request.CurrentText, Encoding.UTF8));
 
-            HttpClient httpClient = _translatorClient.HttpClient.With(client =>
+            var httpClient = _httpClientFactory.CreateClient("translator").With(client =>
             {
                 client.BaseAddress = uri.ToUri();
             });
@@ -55,7 +58,7 @@ namespace DynamicTranslator.Google
             req.Headers.Add(Headers.AcceptEncoding, AcceptEncoding);
             req.Headers.Add(Headers.UserAgent, UserAgent);
             req.Headers.Add(Headers.Accept, Accept);
-            HttpResponseMessage response = await httpClient.SendAsync(req);
+            HttpResponseMessage response = await httpClient.SendAsync(req, cancellationToken);
 
             string mean = string.Empty;
 
@@ -70,10 +73,5 @@ namespace DynamicTranslator.Google
             var output = arrayTree.GetFirstValueInArrayGraph<string>();
             return output;
         }
-    }
-
-    public interface ITranslator
-    {
-        Task<TranslateResult> Translate(TranslateRequest request);
     }
 }

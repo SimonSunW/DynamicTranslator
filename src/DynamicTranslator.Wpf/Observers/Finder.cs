@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
 using System.Threading;
@@ -13,19 +14,25 @@ namespace DynamicTranslator.Wpf.Observers
     {
         private readonly GoogleAnalyticsService _googleAnalytics;
         private readonly GoogleLanguageDetector _languageDetector;
+        private readonly ActiveTranslatorConfiguration _activeTranslatorConfiguration;
+        private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly Notifier _notifier;
-        private readonly WireUp _services;
         private string _previousString;
+        private readonly IEnumerable<ITranslator> _translators;
 
         public Finder(Notifier notifier,
             GoogleLanguageDetector languageDetector,
-            WireUp services,
-            GoogleAnalyticsService googleAnalytics)
+            GoogleAnalyticsService googleAnalytics,
+            ActiveTranslatorConfiguration activeTranslatorConfiguration,
+            IEnumerable<ITranslator> translators,
+            ApplicationConfiguration applicationConfiguration)
         {
             _notifier = notifier;
             _languageDetector = languageDetector;
-            _services = services;
             _googleAnalytics = googleAnalytics;
+            _activeTranslatorConfiguration = activeTranslatorConfiguration;
+            _translators = translators;
+            _applicationConfiguration = applicationConfiguration;
         }
 
 
@@ -56,10 +63,9 @@ namespace DynamicTranslator.Wpf.Observers
         private Task<TranslateResult[]> FindMeans(string currentString, string fromLanguageExtension,
             CancellationToken cancellationToken)
         {
-            var findFunc = _services
-                .ActiveTranslatorConfiguration
-                .ActiveTranslators
-                .Select(x => x.Find(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken))
+            var findFunc = _translators
+                .Where(x => _activeTranslatorConfiguration.Translators.Select(x => x.Type).Contains(x.GetType()))
+                .Select(x => x.Translate(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken))
                 .ToList();
 
             return Task.WhenAll(findFunc.ToArray());
@@ -69,7 +75,7 @@ namespace DynamicTranslator.Wpf.Observers
         {
             await _googleAnalytics.TrackEventAsync("DynamicTranslator",
                 "Translate",
-                $"{currentString} | {fromLanguageExtension} - {_services.ApplicationConfiguration.ToLanguage.Extension} | v{ApplicationVersion.GetCurrentVersion()} ",
+                $"{currentString} | {fromLanguageExtension} - {_applicationConfiguration.ToLanguage.Extension} | v{ApplicationVersion.GetCurrentVersion()} ",
                 null);
 
             await _googleAnalytics.TrackAppScreenAsync("DynamicTranslator",

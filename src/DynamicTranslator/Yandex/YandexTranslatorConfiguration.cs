@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Model;
 
@@ -10,7 +11,7 @@ namespace DynamicTranslator.Yandex
 
 		public override string Url { get; set; }
 
-		public override TranslatorType TranslatorType => TranslatorType.Yandex;
+        public override Type TranslatorType => typeof(YandexTranslator);
 
 		public string ApiKey { get; set; }
 

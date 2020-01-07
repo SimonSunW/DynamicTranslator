@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using DynamicTranslator.Configuration;
 using DynamicTranslator.Model;
 
@@ -17,7 +18,7 @@ namespace DynamicTranslator.Tureng
 
 		public override string Url { get; set; }
 
-		public override TranslatorType TranslatorType => TranslatorType.Tureng;
+        public override Type TranslatorType => typeof(TurengTranslator);
 
 		public TurengTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration, ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration, applicationConfiguration)
 		{

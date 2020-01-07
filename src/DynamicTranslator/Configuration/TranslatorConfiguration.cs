@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DynamicTranslator.Model;
 
@@ -30,7 +31,7 @@ namespace DynamicTranslator.Configuration
 
         public abstract IList<Language> SupportedLanguages { get; set; }
 
-        public abstract TranslatorType TranslatorType { get; }
+        public abstract Type TranslatorType { get; }
 
 		public abstract string Url { get; set; }
     }
