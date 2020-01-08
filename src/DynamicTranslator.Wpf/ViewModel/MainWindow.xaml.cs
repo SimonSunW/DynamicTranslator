@@ -32,15 +32,15 @@ namespace DynamicTranslator.Wpf.ViewModel
         {
             var wireUp = new WireUp(postConfigureServices: services =>
             {
-                services.AddTransient<IFinder, Finder>();
                 services.AddSingleton<Notifications>();
                 services.AddTransient<ClipboardManager>();
                 services.AddSingleton<GrowlNotifications>();
                 services.AddTransient<TranslatorBootstrapper>();
-                services.AddTransient<Notifier>();
+                services.AddTransient<INotifier, GrowlNotifier>();
             });
             ServiceProvider = wireUp.ServiceProvider;
         }
+
         protected override void OnInitialized(EventArgs e)
         {
             InitializeComponent();
@@ -77,7 +77,7 @@ namespace DynamicTranslator.Wpf.ViewModel
             {
                 BtnSwitch.Content = "Stop Translator";
 
-                var selectedLanguageName = ((Language)ComboBoxLanguages.SelectedItem).Name;
+                var selectedLanguageName = ((Language) ComboBoxLanguages.SelectedItem).Name;
                 _applicationConfiguration.ToLanguage =
                     new Language(selectedLanguageName, LanguageMapping.All[selectedLanguageName]);
 
@@ -188,7 +188,6 @@ namespace DynamicTranslator.Wpf.ViewModel
                 _activeTranslatorConfiguration.Activate<PromptTranslator>();
                 _activeTranslatorConfiguration.Activate<SesliSozlukTranslator>();
             }
-
         }
 
         private void UnlockUiElements()

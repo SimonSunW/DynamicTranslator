@@ -44,7 +44,7 @@ namespace DynamicTranslator.SesliSozluk
                 client.BaseAddress = _sesliSozlukTranslatorConfiguration.Url.ToUri();
             });
 
-            var req = new HttpRequestMessage { Method = HttpMethod.Post };
+            var req = new HttpRequestMessage {Method = HttpMethod.Post};
             req.Headers.Add(Headers.AcceptLanguage, AcceptLanguage);
             req.Headers.Add(Headers.AcceptEncoding, AcceptEncoding);
             req.Headers.Add(Headers.ContentType, ContentType);
@@ -71,22 +71,22 @@ namespace DynamicTranslator.SesliSozluk
             document.LoadHtml(text);
 
             (from x in document.DocumentNode.Descendants()
-             where x.Name == "pre"
-             from y in x.Descendants()
-             where y.Name == "ol"
-             from z in y.Descendants()
-             where z.Name == "li"
-             select z.InnerHtml)
+                    where x.Name == "pre"
+                    from y in x.Descendants()
+                    where y.Name == "ol"
+                    from z in y.Descendants()
+                    where z.Name == "li"
+                    select z.InnerHtml)
                 .AsParallel()
                 .ToList()
                 .ForEach(mean => output.AppendLine(mean));
 
             if (string.IsNullOrEmpty(output.ToString()))
                 (from x in document.DocumentNode.Descendants()
-                 where x.Name == "pre"
-                 from y in x.Descendants()
-                 where y.Name == "span"
-                 select y.InnerHtml)
+                        where x.Name == "pre"
+                        from y in x.Descendants()
+                        where y.Name == "span"
+                        select y.InnerHtml)
                     .AsParallel()
                     .ToList()
                     .ForEach(mean => output.AppendLine(mean.StripTagsCharArray()));

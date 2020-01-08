@@ -1,12 +1,13 @@
-﻿using DynamicTranslator.Wpf.ViewModel;
+﻿using DynamicTranslator.Wpf.Observers;
+using DynamicTranslator.Wpf.ViewModel;
 
-namespace DynamicTranslator.Wpf.Observers
+namespace DynamicTranslator.Wpf
 {
-    public class Notifier
+    public class GrowlNotifier : INotifier
     {
         private readonly GrowlNotifications _growlNotifications;
 
-        public Notifier(GrowlNotifications growlNotifications)
+        public GrowlNotifier(GrowlNotifications growlNotifications)
         {
             _growlNotifications = growlNotifications;
         }

@@ -20,14 +20,17 @@ namespace DynamicTranslator.Prompt
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly PromptTranslatorConfiguration _promptTranslatorConfiguration;
         private readonly TranslatorClient _translatorClient;
-        public PromptTranslator(ApplicationConfiguration applicationConfiguration, PromptTranslatorConfiguration promptTranslatorConfiguration, TranslatorClient translatorClient)
+
+        public PromptTranslator(ApplicationConfiguration applicationConfiguration,
+            PromptTranslatorConfiguration promptTranslatorConfiguration, TranslatorClient translatorClient)
         {
             _applicationConfiguration = applicationConfiguration;
             _promptTranslatorConfiguration = promptTranslatorConfiguration;
             _translatorClient = translatorClient;
         }
-        
-        public async Task<TranslateResult> Translate(TranslateRequest translateRequest, CancellationToken cancellationToken)
+
+        public async Task<TranslateResult> Translate(TranslateRequest translateRequest,
+            CancellationToken cancellationToken)
         {
             var requestObject = new
             {
@@ -43,14 +46,17 @@ namespace DynamicTranslator.Prompt
                 IsMobile = false
             };
 
-            var httpClient = _translatorClient.HttpClient.With(client => { client.BaseAddress = _promptTranslatorConfiguration.Url.ToUri(); });
+            var httpClient = _translatorClient.HttpClient.With(client =>
+            {
+                client.BaseAddress = _promptTranslatorConfiguration.Url.ToUri();
+            });
 
 
-            var request = new HttpRequestMessage { Method = HttpMethod.Post };
+            var request = new HttpRequestMessage {Method = HttpMethod.Post};
             request.Headers.Add(Headers.ContentType, ContentType);
             request.Content = new FormUrlEncodedContent(new[]
                 {new KeyValuePair<string, string>(Headers.ContentType, requestObject.ToJsonString(false))});
-            HttpResponseMessage response = await httpClient.SendAsync(request,cancellationToken);
+            HttpResponseMessage response = await httpClient.SendAsync(request, cancellationToken);
             string mean = string.Empty;
             if (response.IsSuccessStatusCode) mean = OrganizeMean(await response.Content.ReadAsStringAsync());
 

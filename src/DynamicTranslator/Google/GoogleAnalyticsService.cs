@@ -8,12 +8,23 @@ namespace DynamicTranslator.Google
 {
     public interface IGoogleAnalyticsService
     {
-        void ECommerceItem(string id, string name, string price, string quantity, string code, string category, string currency);
-        Task ECommerceItemAsync(string id, string name, string price, string quantity, string code, string category, string currency);
-        void ECommerceTransaction(string id, string affiliation, string revenue, string shipping, string tax, string currency);
-        Task ECommerceTransactionAsync(string id, string affiliation, string revenue, string shipping, string tax, string currency);
+        void ECommerceItem(string id, string name, string price, string quantity, string code, string category,
+            string currency);
+
+        Task ECommerceItemAsync(string id, string name, string price, string quantity, string code, string category,
+            string currency);
+
+        void ECommerceTransaction(string id, string affiliation, string revenue, string shipping, string tax,
+            string currency);
+
+        Task ECommerceTransactionAsync(string id, string affiliation, string revenue, string shipping, string tax,
+            string currency);
+
         void TrackAppScreen(string appName, string appVersion, string appId, string appInstallerId, string screenName);
-        Task TrackAppScreenAsync(string appName, string appVersion, string appId, string appInstallerId, string screenName);
+
+        Task TrackAppScreenAsync(string appName, string appVersion, string appId, string appInstallerId,
+            string screenName);
+
         void TrackEvent(string category, string action, string label, string value);
         Task TrackEventAsync(string category, string action, string label, string value);
         void TrackException(string description, bool fatal);
@@ -36,32 +47,38 @@ namespace DynamicTranslator.Google
             _configuration = configuration;
         }
 
-        public void ECommerceItem(string id, string name, string price, string quantity, string code, string category, string currency)
+        public void ECommerceItem(string id, string name, string price, string quantity, string code, string category,
+            string currency)
         {
             PostData(PrepareECommerceItem(id, name, price, quantity, code, category, currency));
         }
 
-        public Task ECommerceItemAsync(string id, string name, string price, string quantity, string code, string category, string currency)
+        public Task ECommerceItemAsync(string id, string name, string price, string quantity, string code,
+            string category, string currency)
         {
             return PostDataAsync(PrepareECommerceItem(id, name, price, quantity, code, category, currency));
         }
 
-        public void ECommerceTransaction(string id, string affiliation, string revenue, string shipping, string tax, string currency)
+        public void ECommerceTransaction(string id, string affiliation, string revenue, string shipping, string tax,
+            string currency)
         {
             PostData(PrepareECommerceTransaction(id, affiliation, revenue, shipping, tax, currency));
         }
 
-        public Task ECommerceTransactionAsync(string id, string affiliation, string revenue, string shipping, string tax, string currency)
+        public Task ECommerceTransactionAsync(string id, string affiliation, string revenue, string shipping,
+            string tax, string currency)
         {
             return PostDataAsync(PrepareECommerceTransaction(id, affiliation, revenue, shipping, tax, currency));
         }
 
-        public void TrackAppScreen(string appName, string appVersion, string appId, string appInstallerId, string screenName)
+        public void TrackAppScreen(string appName, string appVersion, string appId, string appInstallerId,
+            string screenName)
         {
             PostData(PrepareTrackAppScreen(appName, appVersion, appId, appInstallerId, screenName));
         }
 
-        public Task TrackAppScreenAsync(string appName, string appVersion, string appId, string appInstallerId, string screenName)
+        public Task TrackAppScreenAsync(string appName, string appVersion, string appId, string appInstallerId,
+            string screenName)
         {
             return PostDataAsync(PrepareTrackAppScreen(appName, appVersion, appId, appInstallerId, screenName));
         }
@@ -110,9 +127,9 @@ namespace DynamicTranslator.Google
         {
             var ht = new Hashtable
             {
-                { "v", GoogleVersion },
-                { "tid", TrackingId },
-                { "cid", _configuration.ClientConfiguration.Id }
+                {"v", GoogleVersion},
+                {"tid", TrackingId},
+                {"cid", _configuration.ClientConfiguration.Id}
             };
 
             // Version.
@@ -130,6 +147,7 @@ namespace DynamicTranslator.Google
                 {
                     data += "&";
                 }
+
                 if (values[key] != null)
                 {
                     data += key + "=" + HttpUtility.UrlEncode(values[key].ToString());
@@ -151,6 +169,7 @@ namespace DynamicTranslator.Google
                 {
                     data += "&";
                 }
+
                 if (values[key] != null)
                 {
                     data += key + "=" + HttpUtility.UrlEncode(values[key].ToString());
@@ -163,7 +182,8 @@ namespace DynamicTranslator.Google
             }
         }
 
-        private Hashtable PrepareECommerceItem(string id, string name, string price, string quantity, string code, string category, string currency)
+        private Hashtable PrepareECommerceItem(string id, string name, string price, string quantity, string code,
+            string category, string currency)
         {
             var ht = BaseValues();
 
@@ -179,7 +199,8 @@ namespace DynamicTranslator.Google
             return ht;
         }
 
-        private Hashtable PrepareECommerceTransaction(string id, string affiliation, string revenue, string shipping, string tax, string currency)
+        private Hashtable PrepareECommerceTransaction(string id, string affiliation, string revenue, string shipping,
+            string tax, string currency)
         {
             var ht = BaseValues();
 
@@ -194,7 +215,8 @@ namespace DynamicTranslator.Google
             return ht;
         }
 
-        private Hashtable PrepareTrackAppScreen(string appName, string appVersion, string appId, string appInstallerId, string screenName)
+        private Hashtable PrepareTrackAppScreen(string appName, string appVersion, string appId, string appInstallerId,
+            string screenName)
         {
             var ht = BaseValues();
 
@@ -219,6 +241,7 @@ namespace DynamicTranslator.Google
             {
                 ht.Add("el", label); // Event label.
             }
+
             if (value != null)
             {
                 ht.Add("ev", value); // Event value.

@@ -17,7 +17,7 @@ namespace DynamicTranslator.Configuration
             Translators.FirstOrDefault(t => t.Type == typeof(T))?.Activate();
         }
 
-        public void AddTranslator<T>() where T:ITranslator
+        public void AddTranslator<T>() where T : ITranslator
         {
             Translators.Add(new Translator(typeof(T).Name, typeof(T)));
         }

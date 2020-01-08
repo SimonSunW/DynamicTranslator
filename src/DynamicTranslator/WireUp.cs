@@ -2,24 +2,32 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using DynamicTranslator.Configuration;
 using DynamicTranslator.Configuration.UniqueIdentifier;
 using DynamicTranslator.Extensions;
 using DynamicTranslator.Google;
 using DynamicTranslator.Model;
 using DynamicTranslator.Prompt;
+using DynamicTranslator.Wpf.Observers;
 using DynamicTranslator.Yandex;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DynamicTranslator.Configuration
+namespace DynamicTranslator
 {
     public class WireUp
     {
-        public HttpMessageHandler MessageHandler { get; set; } = new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false, AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate };
+        public HttpMessageHandler MessageHandler { get; set; } = new HttpClientHandler
+        {
+            AllowAutoRedirect = false,
+            UseCookies = false,
+            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+        };
 
         public IServiceProvider ServiceProvider { get; }
 
-        public WireUp(Action<IConfigurationBuilder> configure = null, Action<IServiceCollection> postConfigureServices = null)
+        public WireUp(Action<IConfigurationBuilder> configure = null,
+            Action<IServiceCollection> postConfigureServices = null)
         {
             var cb = new ConfigurationBuilder()
                 .AddIniFile("DynamicTranslator.ini", configure != null, false);
@@ -40,7 +48,6 @@ namespace DynamicTranslator.Configuration
                     yandex.SId = YandexTranslator.InternalSId;
                     yandex.Url = YandexTranslator.Url;
                     yandex.ApiKey = configuration["YandexApiKey"];
-
                 })
                 .AddPromptTranslator(prompt =>
                 {
@@ -67,7 +74,9 @@ namespace DynamicTranslator.Configuration
                     var clientConfiguration = new ClientConfiguration
                     {
                         AppVersion = ApplicationVersion.GetCurrentVersion(),
-                        Id = string.IsNullOrEmpty(configuration["ClientId"]) ? GenerateUniqueClientId() : configuration["ClientId"],
+                        Id = string.IsNullOrEmpty(configuration["ClientId"])
+                            ? GenerateUniqueClientId()
+                            : configuration["ClientId"],
                         MachineName = Environment.MachineName.Normalize(),
                     };
                     var existingToLanguage = configuration["ToLanguage"];
@@ -88,6 +97,8 @@ namespace DynamicTranslator.Configuration
                 .AddTransient<IGoogleAnalyticsTracker, GoogleAnalyticsTracker>()
                 .AddTransient<IGoogleLanguageDetector, GoogleLanguageDetector>()
                 .AddTransient<IGoogleAnalyticsService, GoogleAnalyticsService>()
+                .AddTransient<IFinder, Finder>()
+                .AddSingleton<ResultOrganizer>()
                 .AddHttpClient<TranslatorClient>(TranslatorClient.Name)
                 .ConfigurePrimaryHttpMessageHandler(sp => MessageHandler);
 

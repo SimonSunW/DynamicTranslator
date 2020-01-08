@@ -6,7 +6,8 @@ namespace DynamicTranslator.Extensions
 {
     public static class EventHandlerExtensions
     {
-	    public static void InvokeSafely(this PropertyChangedEventHandler eventHandler, object sender, PropertyChangedEventArgs e)
+        public static void InvokeSafely(this PropertyChangedEventHandler eventHandler, object sender,
+            PropertyChangedEventArgs e)
         {
             eventHandler?.Invoke(sender, e);
         }
@@ -16,7 +17,8 @@ namespace DynamicTranslator.Extensions
             eventHandler?.Invoke(sender, e);
         }
 
-        public static Task InvokeSafelyAsync<TEventArgs>(this EventHandler<TEventArgs> eventHandler, object sender, TEventArgs e)
+        public static Task InvokeSafelyAsync<TEventArgs>(this EventHandler<TEventArgs> eventHandler, object sender,
+            TEventArgs e)
             where TEventArgs : EventArgs
         {
             return Task.Run(() => eventHandler?.Invoke(sender, e));

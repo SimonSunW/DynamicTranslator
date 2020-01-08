@@ -10,15 +10,16 @@ namespace DynamicTranslator.Configuration
 {
     public static class AddTranslatorExtensions
     {
-        public static IServiceCollection AddGoogleTranslator(this IServiceCollection services, Action<GoogleTranslatorConfiguration> configure)
+        public static IServiceCollection AddGoogleTranslator(this IServiceCollection services,
+            Action<GoogleTranslatorConfiguration> configure)
         {
             services.AddSingleton<ITranslator, GoogleTranslator>();
             services.AddSingleton(sp =>
             {
                 var conf = new GoogleTranslatorConfiguration(
-                     sp.GetService<ActiveTranslatorConfiguration>(),
-                     sp.GetService<ApplicationConfiguration>()
-                    );
+                    sp.GetService<ActiveTranslatorConfiguration>(),
+                    sp.GetService<ApplicationConfiguration>()
+                );
 
                 configure?.Invoke(conf);
                 return conf;
@@ -26,7 +27,8 @@ namespace DynamicTranslator.Configuration
             return services;
         }
 
-        public static IServiceCollection AddYandexTranslator(this IServiceCollection services, Action<YandexTranslatorConfiguration> configure)
+        public static IServiceCollection AddYandexTranslator(this IServiceCollection services,
+            Action<YandexTranslatorConfiguration> configure)
         {
             services.AddTransient<ITranslator, YandexTranslator>();
             services.AddSingleton(sp =>
@@ -42,7 +44,8 @@ namespace DynamicTranslator.Configuration
             return services;
         }
 
-        public static IServiceCollection AddSesliSozlukTranslator(this IServiceCollection services, Action<SesliSozlukTranslatorConfiguration> configure)
+        public static IServiceCollection AddSesliSozlukTranslator(this IServiceCollection services,
+            Action<SesliSozlukTranslatorConfiguration> configure)
         {
             services.AddTransient<ITranslator, SesliSozlukTranslator>();
             services.AddSingleton(sp =>
@@ -58,7 +61,8 @@ namespace DynamicTranslator.Configuration
             return services;
         }
 
-        public static IServiceCollection AddTurengTranslator(this IServiceCollection services, Action<TurengTranslatorConfiguration> configure)
+        public static IServiceCollection AddTurengTranslator(this IServiceCollection services,
+            Action<TurengTranslatorConfiguration> configure)
         {
             services.AddTransient<ITranslator, TurengTranslator>();
             services.AddSingleton(sp =>
@@ -74,7 +78,8 @@ namespace DynamicTranslator.Configuration
             return services;
         }
 
-        public static IServiceCollection AddPromptTranslator(this IServiceCollection services, Action<PromptTranslatorConfiguration> configure)
+        public static IServiceCollection AddPromptTranslator(this IServiceCollection services,
+            Action<PromptTranslatorConfiguration> configure)
         {
             services.AddTransient<ITranslator, PromptTranslator>();
             services.AddSingleton(sp =>
@@ -89,6 +94,5 @@ namespace DynamicTranslator.Configuration
             });
             return services;
         }
-
     }
 }

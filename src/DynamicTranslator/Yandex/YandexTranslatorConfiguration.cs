@@ -5,22 +5,24 @@ using DynamicTranslator.Model;
 
 namespace DynamicTranslator.Yandex
 {
-	public class YandexTranslatorConfiguration : TranslatorConfiguration
-	{
-		public override IList<Language> SupportedLanguages { get; set; }
+    public class YandexTranslatorConfiguration : TranslatorConfiguration
+    {
+        public override IList<Language> SupportedLanguages { get; set; }
 
-		public override string Url { get; set; }
+        public override string Url { get; set; }
 
         public override Type TranslatorType => typeof(YandexTranslator);
 
-		public string ApiKey { get; set; }
+        public string ApiKey { get; set; }
 
-		public string BaseUrl { get; set; }
+        public string BaseUrl { get; set; }
 
-		public string SId { get; set; }
+        public string SId { get; set; }
 
-		public YandexTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration, ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration, applicationConfiguration)
-		{
-		}
-	}
+        public YandexTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration,
+            ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration,
+            applicationConfiguration)
+        {
+        }
+    }
 }

@@ -20,8 +20,9 @@ namespace DynamicTranslator.Prompt
         public string Ts { get; set; }
 
         public PromptTranslatorConfiguration(
-	        ActiveTranslatorConfiguration activeTranslatorConfiguration,
-	        ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration, applicationConfiguration)
+            ActiveTranslatorConfiguration activeTranslatorConfiguration,
+            ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration,
+            applicationConfiguration)
         {
         }
     }

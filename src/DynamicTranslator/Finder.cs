@@ -20,16 +20,18 @@ namespace DynamicTranslator.Wpf.Observers
         private readonly IGoogleLanguageDetector _languageDetector;
         private readonly ActiveTranslatorConfiguration _activeTranslatorConfiguration;
         private readonly ApplicationConfiguration _applicationConfiguration;
-        private readonly Notifier _notifier;
+        private readonly INotifier _notifier;
         private string _previousString;
         private readonly IEnumerable<ITranslator> _translators;
+        private readonly ResultOrganizer _resultOrganizer;
 
-        public Finder(Notifier notifier,
+        public Finder(INotifier notifier,
             IGoogleLanguageDetector languageDetector,
             IGoogleAnalyticsService googleAnalytics,
             ActiveTranslatorConfiguration activeTranslatorConfiguration,
             IEnumerable<ITranslator> translators,
-            ApplicationConfiguration applicationConfiguration)
+            ApplicationConfiguration applicationConfiguration, 
+            ResultOrganizer resultOrganizer)
         {
             _notifier = notifier;
             _languageDetector = languageDetector;
@@ -37,8 +39,8 @@ namespace DynamicTranslator.Wpf.Observers
             _activeTranslatorConfiguration = activeTranslatorConfiguration;
             _translators = translators;
             _applicationConfiguration = applicationConfiguration;
+            _resultOrganizer = resultOrganizer;
         }
-
 
         public async Task Find(string currentString, CancellationToken cancellationToken)
         {
@@ -51,7 +53,7 @@ namespace DynamicTranslator.Wpf.Observers
                 var fromLanguageExtension = await _languageDetector.DetectLanguage(currentString, cancellationToken);
 
                 var results = await FindMeans(currentString, fromLanguageExtension, cancellationToken);
-                var means = new ResultOrganizer().OrganizeResult(results, currentString, out var failedResults);
+                var means = _resultOrganizer.OrganizeResult(results, currentString, out var failedResults);
                 Notify(currentString, means);
 
                 await Trace(currentString, fromLanguageExtension);

@@ -10,7 +10,7 @@ using DynamicTranslator.Model;
 
 namespace DynamicTranslator.Yandex
 {
-    public class YandexTranslator: ITranslator
+    public class YandexTranslator : ITranslator
     {
         public const string AnonymousUrl = "https://translate.yandex.net/api/v1/tr.json/translate?";
         public const string BaseUrl = "https://translate.yandex.com/";
@@ -20,7 +20,9 @@ namespace DynamicTranslator.Yandex
         private readonly YandexTranslatorConfiguration _yandex;
         private readonly ApplicationConfiguration _applicationConfiguration;
         private readonly IHttpClientFactory _httpClientFactory;
-        public YandexTranslator (YandexTranslatorConfiguration yandex, ApplicationConfiguration applicationConfiguration, IHttpClientFactory httpClientFactory)
+
+        public YandexTranslator(YandexTranslatorConfiguration yandex, ApplicationConfiguration applicationConfiguration,
+            IHttpClientFactory httpClientFactory)
         {
             _yandex = yandex;
             _applicationConfiguration = applicationConfiguration;
@@ -29,16 +31,17 @@ namespace DynamicTranslator.Yandex
 
         public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
         {
-            
             var address = new Uri(string.Format(_yandex.Url +
                                                 new StringBuilder()
                                                     .Append($"key={_yandex.ApiKey}")
                                                     .Append(Headers.Ampersand)
-                                                    .Append($"lang={request.FromLanguageExtension}-{_applicationConfiguration.ToLanguage.Extension}")
+                                                    .Append(
+                                                        $"lang={request.FromLanguageExtension}-{_applicationConfiguration.ToLanguage.Extension}")
                                                     .Append(Headers.Ampersand)
                                                     .Append($"text={Uri.EscapeUriString(request.CurrentText)}")));
 
-            HttpResponseMessage response = await _httpClientFactory.CreateClient("translator").With(client => { client.BaseAddress = new Uri(BaseUrl); }).PostAsync(address, null, cancellationToken);
+            HttpResponseMessage response = await _httpClientFactory.CreateClient("translator")
+                .With(client => { client.BaseAddress = new Uri(BaseUrl); }).PostAsync(address, null, cancellationToken);
             string mean = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
@@ -47,14 +50,15 @@ namespace DynamicTranslator.Yandex
 
             return new TranslateResult(true, mean);
         }
+
         string MakeMeaningful(string text)
         {
             string output;
             if (text == null)
             {
                 return string.Empty;
-
             }
+
             if (text.IsXml())
             {
                 var doc = new XmlDocument();

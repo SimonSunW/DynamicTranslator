@@ -101,30 +101,5 @@ namespace DynamicTranslator.Wpf.ViewModel
             var element = sender as Grid;
             RemoveNotification(Notifications.First(n => (element != null) && (n.Id == int.Parse(element.Tag.ToString()))));
         }
-
-        private async void TextToSpeechButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            await Task.Run(async
-                () =>
-                {
-                    await Dispatcher.InvokeAsync(
-                        () =>
-                        {
-                            //var notification = ((FrameworkElement)sender).DataContext as Notification;
-                            //using (var synthesizer = new SpeechSynthesizer())
-                            //{
-                            //    synthesizer.SelectVoiceByHints(VoiceGender.Female, VoiceAge.Adult);
-                            //    synthesizer.SetOutputToDefaultAudioDevice();
-                            //    synthesizer.Volume = 100;
-                            //    synthesizer.Rate = 0;
-
-                            //    if (notification != null)
-                            //    {
-                            //        synthesizer.Speak(notification.Title);
-                            //    }
-                            //}
-                        });
-                });
-        }
     }
 }
