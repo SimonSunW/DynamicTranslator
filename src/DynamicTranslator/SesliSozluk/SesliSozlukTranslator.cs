@@ -34,6 +34,8 @@ namespace DynamicTranslator.SesliSozluk
             _translatorClient = translatorClient;
         }
 
+        public TranslatorType Type => TranslatorType.SesliSozluk;
+
         public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
         {
             var parameter =

@@ -1,5 +1,4 @@
-﻿using DynamicTranslator.Wpf.Observers;
-using DynamicTranslator.Wpf.ViewModel;
+﻿using DynamicTranslator.Wpf.ViewModel;
 
 namespace DynamicTranslator.Wpf
 {

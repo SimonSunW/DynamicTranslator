@@ -1,4 +1,4 @@
-﻿namespace DynamicTranslator.Wpf.Observers
+﻿namespace DynamicTranslator
 {
     public interface INotifier
     {

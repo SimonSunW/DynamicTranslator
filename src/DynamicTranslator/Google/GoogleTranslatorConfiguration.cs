@@ -11,7 +11,7 @@ namespace DynamicTranslator.Google
 
         public override string Url { get; set; }
 
-        public override Type TranslatorType => typeof(GoogleTranslator);
+        public override TranslatorType TranslatorType => TranslatorType.Google;
 
         public GoogleTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration,
             ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration,

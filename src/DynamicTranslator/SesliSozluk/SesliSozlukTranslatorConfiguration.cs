@@ -11,7 +11,7 @@ namespace DynamicTranslator.SesliSozluk
 
         public override string Url { get; set; }
 
-        public override Type TranslatorType => typeof(SesliSozlukTranslator);
+        public override TranslatorType TranslatorType => TranslatorType.SesliSozluk;
 
         public SesliSozlukTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration,
             ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration,

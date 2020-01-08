@@ -63,6 +63,8 @@ namespace DynamicTranslator.Tureng
             return output.ToString().ToLower().Trim();
         }
 
+        public TranslatorType Type => TranslatorType.Yandex;
+
         public async Task<TranslateResult> Translate(TranslateRequest translateRequest,
             CancellationToken cancellationToken)
         {

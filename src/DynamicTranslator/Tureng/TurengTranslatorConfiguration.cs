@@ -18,7 +18,7 @@ namespace DynamicTranslator.Tureng
 
         public override string Url { get; set; }
 
-        public override Type TranslatorType => typeof(TurengTranslator);
+        public override TranslatorType TranslatorType => TranslatorType.Tureng;
 
         public TurengTranslatorConfiguration(ActiveTranslatorConfiguration activeTranslatorConfiguration,
             ApplicationConfiguration applicationConfiguration) : base(activeTranslatorConfiguration,

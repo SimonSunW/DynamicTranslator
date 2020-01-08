@@ -1,20 +1,16 @@
-using System;
-
 namespace DynamicTranslator
 {
     public class Translator
     {
-        public Translator(string name, Type type, bool isEnabled)
+        public Translator(string name, bool isEnabled)
         {
             IsEnabled = isEnabled;
             Name = name;
-            Type = type;
         }
 
-        public Translator(string name, Type type) : this(name, type, true)
+        public Translator(string name) : this(name,  true)
         {
             Name = name;
-            Type = type;
         }
 
         public Translator Activate()
@@ -34,7 +30,5 @@ namespace DynamicTranslator
         public bool IsEnabled { get; private set; }
 
         public string Name { get; private set; }
-
-        public Type Type { get; private set; }
     }
 }

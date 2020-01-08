@@ -36,6 +36,8 @@ namespace DynamicTranslator.Google
             _httpClientFactory = httpClientFactory;
         }
 
+        public TranslatorType Type => TranslatorType.Google;
+
         public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
         {
             if (!_google.CanSupport() || !_google.IsActive())

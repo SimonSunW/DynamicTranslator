@@ -29,6 +29,8 @@ namespace DynamicTranslator.Yandex
             _httpClientFactory = httpClientFactory;
         }
 
+        public TranslatorType Type => TranslatorType.SesliSozluk;
+
         public async Task<TranslateResult> Translate(TranslateRequest request, CancellationToken cancellationToken)
         {
             var address = new Uri(string.Format(_yandex.Url +

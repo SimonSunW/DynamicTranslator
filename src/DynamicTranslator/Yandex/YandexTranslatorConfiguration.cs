@@ -11,7 +11,7 @@ namespace DynamicTranslator.Yandex
 
         public override string Url { get; set; }
 
-        public override Type TranslatorType => typeof(YandexTranslator);
+        public override TranslatorType TranslatorType => TranslatorType.Yandex;
 
         public string ApiKey { get; set; }
 

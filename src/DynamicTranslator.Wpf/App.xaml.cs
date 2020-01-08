@@ -4,8 +4,8 @@ using System.Security.AccessControl;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using DynamicTranslator.Configuration;
 using DynamicTranslator.Wpf.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DynamicTranslator.Wpf
 {
@@ -15,15 +15,30 @@ namespace DynamicTranslator.Wpf
 		private const string MutexName = @"Global\1109F104-B4B4-4ED1-920C-F4D8EFE9E834}";
 		private bool _isMutexCreated;
 		private bool _isMutexUnauthorized;
+        private WireUp _wireUp;
 
-		public App()
+        public App()
 		{
 			GuardAgainstMultipleInstances();
 		}
 
         protected override void OnStartup(StartupEventArgs eventArgs)
         {
-            var mainWindow = new MainWindow();
+            _wireUp = new WireUp(postConfigureServices: services =>
+            {
+                services.AddSingleton<Notifications>();
+                services.AddTransient<ClipboardManager>();
+                services.AddSingleton<GrowlNotifications>();
+                services.AddTransient<TranslatorBootstrapper>();
+                services.AddTransient<INotifier, GrowlNotifier>();
+                services.AddSingleton<MainWindow>();
+            });
+
+            var mainWindow = _wireUp.ServiceProvider.GetService<MainWindow>();
+            Current.Exit += (sender, args) =>
+            {
+                _wireUp.Dispose();
+            };
             mainWindow.InitializeComponent();
             mainWindow.Show();
         }
@@ -72,5 +87,5 @@ namespace DynamicTranslator.Wpf
 		{
 			e.Handled = true;
 		}
-	}
+    }
 }

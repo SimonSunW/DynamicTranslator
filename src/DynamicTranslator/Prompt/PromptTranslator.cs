@@ -29,6 +29,8 @@ namespace DynamicTranslator.Prompt
             _translatorClient = translatorClient;
         }
 
+        public TranslatorType Type => TranslatorType.Prompt;
+
         public async Task<TranslateResult> Translate(TranslateRequest translateRequest,
             CancellationToken cancellationToken)
         {

@@ -4,15 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using DynamicTranslator.Configuration;
-using DynamicTranslator.Google;
 using DynamicTranslator.Model;
-using DynamicTranslator.Prompt;
-using DynamicTranslator.SesliSozluk;
-using DynamicTranslator.Tureng;
 using DynamicTranslator.Wpf.Extensions;
-using DynamicTranslator.Wpf.Observers;
-using DynamicTranslator.Yandex;
-using Microsoft.Extensions.DependencyInjection;
 using Octokit;
 using Language = DynamicTranslator.Model.Language;
 
@@ -20,36 +13,25 @@ namespace DynamicTranslator.Wpf.ViewModel
 {
     public partial class MainWindow : Window
     {
-        private ActiveTranslatorConfiguration _activeTranslatorConfiguration;
-        private ApplicationConfiguration _applicationConfiguration;
+        private readonly ActiveTranslatorConfiguration _activeTranslatorConfiguration;
+        private readonly ApplicationConfiguration _applicationConfiguration;
         private GitHubClient _gitHubClient;
         private Func<string, bool> _isNewVersion;
         private bool _isRunning;
-        public IServiceProvider ServiceProvider { get; }
-        public TranslatorBootstrapper Translator { get; private set; }
+        private readonly TranslatorBootstrapper _translator;
 
-        public MainWindow()
+        public MainWindow(ActiveTranslatorConfiguration activeTranslatorConfiguration, ApplicationConfiguration applicationConfiguration, TranslatorBootstrapper translator)
         {
-            var wireUp = new WireUp(postConfigureServices: services =>
-            {
-                services.AddSingleton<Notifications>();
-                services.AddTransient<ClipboardManager>();
-                services.AddSingleton<GrowlNotifications>();
-                services.AddTransient<TranslatorBootstrapper>();
-                services.AddTransient<INotifier, GrowlNotifier>();
-            });
-            ServiceProvider = wireUp.ServiceProvider;
+            _activeTranslatorConfiguration = activeTranslatorConfiguration;
+            _applicationConfiguration = applicationConfiguration;
+            _translator = translator;
         }
 
         protected override void OnInitialized(EventArgs e)
         {
             InitializeComponent();
             base.OnInitialized(e);
-
-            _applicationConfiguration = ServiceProvider.GetService<ApplicationConfiguration>();
-            _activeTranslatorConfiguration = ServiceProvider.GetService<ActiveTranslatorConfiguration>();
-            Translator = ServiceProvider.GetService<TranslatorBootstrapper>();
-
+            
             _gitHubClient = new GitHubClient(new ProductHeaderValue("DynamicTranslator"));
             _isNewVersion = version =>
             {
@@ -86,7 +68,10 @@ namespace DynamicTranslator.Wpf.ViewModel
 
                 this.DispatchingAsync(() =>
                 {
-                    if (!Translator.IsInitialized) Translator.Initialize();
+                    if (!_translator.IsInitialized)
+                    {
+                        _translator.Initialize();
+                    }
                 });
 
                 _isRunning = true;
@@ -152,41 +137,36 @@ namespace DynamicTranslator.Wpf.ViewModel
 
             if (CheckBoxGoogleTranslate.IsChecked != null && CheckBoxGoogleTranslate.IsChecked.Value)
             {
-                _activeTranslatorConfiguration.AddTranslator<GoogleTranslator>();
-                _activeTranslatorConfiguration.Activate<GoogleTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Google);
             }
 
             if (CheckBoxYandexTranslate.IsChecked != null && CheckBoxYandexTranslate.IsChecked.Value)
             {
-                _activeTranslatorConfiguration.AddTranslator<YandexTranslator>();
-                _activeTranslatorConfiguration.Activate<YandexTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Yandex);
             }
 
             if (CheckBoxTureng.IsChecked != null && CheckBoxTureng.IsChecked.Value)
             {
-                _activeTranslatorConfiguration.AddTranslator<TurengTranslator>();
-                _activeTranslatorConfiguration.Activate<TurengTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Tureng);
             }
 
             if (CheckBoxSesliSozluk.IsChecked != null && CheckBoxSesliSozluk.IsChecked.Value)
             {
-                _activeTranslatorConfiguration.AddTranslator<SesliSozlukTranslator>();
-                _activeTranslatorConfiguration.Activate<SesliSozlukTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.SesliSozluk);
             }
 
             if (CheckBoxPrompt.IsChecked != null && CheckBoxPrompt.IsChecked.Value)
             {
-                _activeTranslatorConfiguration.AddTranslator<PromptTranslator>();
-                _activeTranslatorConfiguration.Activate<PromptTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Prompt);
             }
 
             if (!_activeTranslatorConfiguration.ActiveTranslators.Any())
             {
-                _activeTranslatorConfiguration.Activate<GoogleTranslator>();
-                _activeTranslatorConfiguration.Activate<YandexTranslator>();
-                _activeTranslatorConfiguration.Activate<TurengTranslator>();
-                _activeTranslatorConfiguration.Activate<PromptTranslator>();
-                _activeTranslatorConfiguration.Activate<SesliSozlukTranslator>();
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Google);
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Yandex);
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Tureng);
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.SesliSozluk);
+                _activeTranslatorConfiguration.AddTranslator(TranslatorType.Prompt);
             }
         }
 

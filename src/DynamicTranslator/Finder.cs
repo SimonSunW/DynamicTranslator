@@ -7,7 +7,7 @@ using DynamicTranslator.Configuration;
 using DynamicTranslator.Google;
 using DynamicTranslator.Model;
 
-namespace DynamicTranslator.Wpf.Observers
+namespace DynamicTranslator
 {
     public interface IFinder
     {
@@ -68,7 +68,7 @@ namespace DynamicTranslator.Wpf.Observers
             CancellationToken cancellationToken)
         {
             var findFunc = _translators
-                .Where(x => _activeTranslatorConfiguration.Translators.Select(translator => translator.Type).Contains(x.GetType()))
+                .Where(x => _activeTranslatorConfiguration.ActiveTranslators.Select(translator => translator.Name).Contains(x.Type.ToString()))
                 .Select(x => x.Translate(new TranslateRequest(currentString, fromLanguageExtension), cancellationToken))
                 .ToList();
 

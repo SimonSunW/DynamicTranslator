@@ -11,7 +11,7 @@ namespace DynamicTranslator.Prompt
 
         public override string Url { get; set; }
 
-        public override Type TranslatorType => typeof(PromptTranslator);
+        public override TranslatorType TranslatorType => TranslatorType.Prompt;
 
         public string Template { get; set; }
 

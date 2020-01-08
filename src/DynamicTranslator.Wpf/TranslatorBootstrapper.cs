@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
-using DynamicTranslator.Wpf.Observers;
 using DynamicTranslator.Wpf.ViewModel;
 using Gma.System.MouseKeyHook;
 using System.Reactive.Concurrency;

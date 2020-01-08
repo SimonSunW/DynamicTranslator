@@ -25,14 +25,14 @@ namespace DynamicTranslator.Configuration
         public virtual bool IsActive()
         {
             return _activeTranslatorConfiguration.ActiveTranslators
-                .Any(x => (x.Type == TranslatorType)
+                .Any(x => (x.Name == TranslatorType.ToString())
                           && x.IsActive
                           && x.IsEnabled);
         }
 
         public abstract IList<Language> SupportedLanguages { get; set; }
 
-        public abstract Type TranslatorType { get; }
+        public abstract TranslatorType TranslatorType { get; }
 
         public abstract string Url { get; set; }
     }

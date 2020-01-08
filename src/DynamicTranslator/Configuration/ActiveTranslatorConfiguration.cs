@@ -12,14 +12,15 @@ namespace DynamicTranslator.Configuration
             Translators = new List<Translator>();
         }
 
-        public void Activate<T>() where T : ITranslator
+        public void Activate(TranslatorType type) 
         {
-            Translators.FirstOrDefault(t => t.Type == typeof(T))?.Activate();
+            Translators.FirstOrDefault(t => t.Name == type.ToString())?.Activate();
         }
 
-        public void AddTranslator<T>() where T : ITranslator
+        public void AddTranslator(TranslatorType type)
         {
-            Translators.Add(new Translator(typeof(T).Name, typeof(T)));
+            Translators.Add(new Translator(type.ToString()));
+            Activate(type);
         }
 
         public void DeActivate()

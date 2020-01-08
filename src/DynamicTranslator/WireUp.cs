@@ -8,14 +8,13 @@ using DynamicTranslator.Extensions;
 using DynamicTranslator.Google;
 using DynamicTranslator.Model;
 using DynamicTranslator.Prompt;
-using DynamicTranslator.Wpf.Observers;
 using DynamicTranslator.Yandex;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DynamicTranslator
 {
-    public class WireUp
+    public class WireUp : IDisposable
     {
         public HttpMessageHandler MessageHandler { get; set; } = new HttpClientHandler
         {
@@ -126,6 +125,11 @@ namespace DynamicTranslator
             }
 
             return uniqueId;
+        }
+
+        public void Dispose()
+        {
+            MessageHandler?.Dispose();
         }
     }
 }
